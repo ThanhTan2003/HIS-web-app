@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        
+
+*{
+    font-family: system-ui;
+}
+
+/*------------ Login container ------------*/
+
+.box-area{
+    width: 900px;
+}
+
+/*------------ Right box ------------*/
+
+.right-box{
+    padding: 40px 30px 40px 40px;
+}
+
+/*------------ Custom Placeholder ------------*/
+
+::placeholder{
+    font-size: 16px;
+}
+
+.rounded-4{
+    border-radius: 20px;
+}
+.rounded-5{
+    border-radius: 30px;
+}
+.input{
+
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    outline: none;
+    margin-bottom: 20px;
+    color: #40414a;
+}
+
+
+/*------------ For small screens------------*/
+
+
+    </style>
+    <title>IT Education | Đăng nhập</title>
+</head>
+<body>
+
+    <!----------------------- Main Container -------------------------->
+
+     <div class="container d-flex justify-content-center align-items-center min-vh-100">
+
+    <!----------------------- Login Container -------------------------->
+
+       <div class="row border rounded-5 p-3 bg-white shadow box-area">
+
+    <!--------------------------- Left Box ----------------------------->
+
+       <div class="col-md-6 rounded-4 d-flex justify-content-center align-items-center" style="background: #f3f8ff;">
+        <img src="Data_security_05 [Converted].png" class="img-fluid" style="width: 80%;">
+       </div> 
+
+    <!-------------------- ------ Right Box ---------------------------->
+        
+       <div class="col-md-6 right-box">
+          <div class="row align-items-center">
+            <div class="header-text" style="text-align: center;">
+                <img src="logo phong kham.PNG" style="width: 100px; display: block; margin: auto;">
+                <br>
+                <h6>Hệ thống quản lý đặt lịch khám chữa bệnh</h6><br>
+                <h2 style="color: rgb(6, 22, 94);">Đăng nhập</h2>
+                <br>
+            </div>
+                <p style="font-size: 17px;">Tài khoản</p>
+                <div class="input-group">
+                    <input type="text" class="input" placeholder="">
+                </div>
+                <p>Mật khẩu</p>
+                <div class="input-group">
+                    
+                    <input type="password" class="input" placeholder="">
+                </div>
+                <div class="input-group mb-5 d-flex justify-content-between">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="formCheck">
+                        <label for="formCheck" class="form-check-label text-secondary"><small>Ghi nhớ mật khẩu</small></label>
+                    </div>
+                    
+                </div>
+                <div class="input-group mb-3">
+                    <button class="btn btn-lg btn-primary w-100 fs-6"><b>Đăng nhập</b></button>
+                </div>
+                </div>
+          </div>
+       </div> 
+      </div>
+    </div>
+
+</body>
+</html>
