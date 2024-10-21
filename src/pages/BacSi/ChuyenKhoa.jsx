@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { getToken } from "../../../services/localStorageService";
+import { getToken } from "../../services/localStorageService";
+import { CONFIG } from '../../configurations/configuration';
 
 function DanhSachChuyenKhoa() {
     const navigate = useNavigate();
@@ -17,7 +18,7 @@ function DanhSachChuyenKhoa() {
         try {
             setLoading(true);
             const response = await fetch(
-                `http://localhost:8080/api/v1/doctor/specialty/search?keyword=${keyword}&page=${currentPage}&size=${pageSize}`,
+                `${CONFIG.API_GATEWAY}/doctor/specialty/search?keyword=${keyword}&page=${currentPage}&size=${pageSize}`,
                 {
                     method: "GET",
                     headers: {

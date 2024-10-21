@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getToken, setToken } from '../services/localStorageService';
 import { logIn } from '../services/authenticationService';
+import { CONFIG, API } from '../configurations/configuration';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -13,7 +14,7 @@ const Login = () => {
         event.preventDefault(); // Ngăn hành động mặc định của form
 
         try {
-            const response = await fetch("http://localhost:8080/api/v1/identity/auth/log-in", {
+            const response = await fetch(`${CONFIG.API_GATEWAY}${API.LOGIN}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json", // Set the content type to JSON
@@ -35,7 +36,7 @@ const Login = () => {
             // Kiểm tra nếu người dùng được xác thực
             if (data.authenticated) {
                 setToken(data.token); // Lưu token vào localStorage
-                navigate("/home"); // Điều hướng về trang chủ
+                navigate("/"); // Điều hướng về trang chủ
             } else {
                 throw new Error("Thông tin đăng nhập không đúng. Vui lòng kiểm tra lại!");
             }

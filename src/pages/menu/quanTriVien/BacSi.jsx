@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import DanhSach from './BacSi/DanhSach';
-import ThongKe from './BacSi/ThongKe';
-import ChuyenKhoa from './BacSi/ChuyenKhoa';
-import NghiPhep from './BacSi/NghiPhep';
+import DanhSach from '../../BacSi/DanhSach';
+import ThongKe from '../../BacSi/ThongKe';
+import ChuyenKhoa from '../../BacSi/ChuyenKhoa';
+import NghiPhep from '../../BacSi/NghiPhep';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChartSimple, faUsers, faDna, faUserDoctor } from '@fortawesome/free-solid-svg-icons'

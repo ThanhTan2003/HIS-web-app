@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { getToken } from "../../../services/localStorageService";
+import { getToken } from "../../services/localStorageService";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass, faRotate, faInfo } from '@fortawesome/free-solid-svg-icons'
+import { CONFIG } from '../../configurations/configuration';
 
 function DanhSach() {
     const navigate = useNavigate();
@@ -26,7 +27,7 @@ function DanhSach() {
         try {
             setLoading(true);
             const response = await fetch(
-              `http://localhost:8080/api/v1/doctor/search?keyword=${keyword}&page=${currentPage}&size=${pageSize}&specialty=${selectedSpecialty}&status=${selectedStatus}`,
+              `${CONFIG.API_GATEWAY}/doctor/search?keyword=${keyword}&page=${currentPage}&size=${pageSize}&specialty=${selectedSpecialty}&status=${selectedStatus}`,
               {
                 method: "GET",
                 headers: {
@@ -57,7 +58,7 @@ function DanhSach() {
     // Lấy danh sách chuyên khoa từ API
     const getSpecialties = async (accessToken) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/v1/doctor/specialty/get-all?page=1&size=100`, {
+            const response = await fetch(`${CONFIG.API_GATEWAY}/doctor/specialty/get-all?page=1&size=100`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${accessToken}`,

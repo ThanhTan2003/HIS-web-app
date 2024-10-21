@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import BacSi from '../QuanTriVien/BacSi';
-import BenhNhan from '../QuanTriVien/BenhNhan';
-import DichVu from '../QuanTriVien/DichVu';
-import HoSoBenhAn from '../QuanTriVien/HoSoBenhAn';
-import LichKhamBenh from '../QuanTriVien/LichKhamBenh';
-import PhongKham from '../QuanTriVien/PhongKham';
-import QuanLyTaiKhoan from '../QuanTriVien/QuanLyTaiKhoan';
-import TrangChu from '../QuanTriVien/TrangChu';
+import {Routes, Route} from 'react-router-dom'
+import BacSi from '../menu/quanTriVien/BacSi';
+import BenhNhan from '../menu/quanTriVien/BenhNhan';
+import DichVu from '../menu/quanTriVien/DichVu';
+import HoSoBenhAn from '../menu/quanTriVien/HoSoBenhAn';
+import LichKhamBenh from '../menu/quanTriVien/LichKhamBenh';
+import PhongKham from '../menu/quanTriVien/PhongKham';
+import QuanLyTaiKhoan from '../menu/quanTriVien/QuanLyTaiKhoan';
+import TrangChu from '../menu/quanTriVien/TrangChu';
 import { useNavigate } from 'react-router-dom';
 import { logOut } from '../../services/authenticationService'; // Nhập hàm đăng xuất
 

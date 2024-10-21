@@ -1,15 +1,14 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "../pages/Login";
 import Home from "../pages/homes/Home";
-import BacSi from "../pages/QuanTriVien/BacSi"
+import BacSi from "../pages/menu/quanTriVien/BacSi"
 
 const AppRoutes = () => {
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/bac-si" element={<BacSi />} />
+        <Route path="/" element={<Home />} />
       </Routes>
     </Router>
   );
