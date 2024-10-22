@@ -5,6 +5,7 @@ export const CONFIG = {
   export const API = {
     LOGIN: "/identity/auth/log-in",
     MY_INFO: "/identity/user/get-info",
+    INTROSPECT:"/identity/auth/introspect"
   };
 
 //  Tệp này chứa các cấu hình cần thiết cho ứng dụng, bao gồm các URL của API và các endpoint cụ thể.

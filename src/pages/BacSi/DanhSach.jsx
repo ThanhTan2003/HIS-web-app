@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
 import { getToken } from "../../services/localStorageService";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass, faRotate, faInfo } from '@fortawesome/free-solid-svg-icons'
@@ -21,6 +21,8 @@ function DanhSach() {
 
     const [selectedSpecialty, setSelectedSpecialty] = useState(""); // Lưu chuyên khoa đã chọn
     const [selectedStatus, setSelectedStatus] = useState(""); // Lưu trạng thái đã chọn
+
+    const { doctorId } = useParams();
 
     // Hàm lấy thông tin người dùng và danh sách bác sĩ
     const getUserDetails = async (accessToken) => {
@@ -131,154 +133,158 @@ function DanhSach() {
     };
 
     return (
-        <div style={{ padding: 20 }}>
-            {loading ? (
-                <div className="flex justify-center">
-                    <div className="spinner"></div> {/* Sử dụng spinner đơn giản */}
-                </div>
-            ) : (
+        <div>
+            {!doctorId &&(
                 <>
-                    <div className="flex justify-between items-center mb-2">
-                        <button 
-                            className="bg-sky-600 text-white py-2 px-4 rounded font-bold hover:bg-sky-700"
-                            title='Đồng bộ dữ liệu với hệ thống HIS'
-                        >
-                            Đồng bộ dữ liệu
-                            &nbsp;<FontAwesomeIcon icon={faRotate} />
-                        </button>
-
-                        <div className="flex items-center space-x-2">
-                            <select 
-                                className="border p-2 rounded border-blue-300" 
-                                value={selectedSpecialty}
-                                onChange={(e) => setSelectedSpecialty(e.target.value)}
-                            >
-                                <option value="">Tất cả chuyên khoa</option>
-                                {specialties.map(specialty => (
-                                    <option key={specialty.specialtyId} value={specialty.specialtyId}>
-                                        {specialty.specialtyName}
-                                    </option>
-                                ))}
-                            </select>
-
-                            {/* Thay đổi từ combobox "Học hàm/Học vị" thành "Trạng thái" */}
-                            <select 
-                                className="border p-2 rounded border-blue-300" 
-                                value={selectedStatus}
-                                onChange={(e) => setSelectedStatus(e.target.value)}
-                            >
-                                <option value="DangLamViec">Đang làm việc</option>
-                                <option value="NgungCongTac">Ngừng công tác</option>
-                                <option value="ChuyenCongTac">Chuyển công tác</option>
-                            </select>
-
-                            <input
-                                type="text"
-                                placeholder="Nhập từ khóa tìm kiếm"
-                                value={keyword}
-                                onChange={(e) => setKeyword(e.target.value)}
-                                className="border p-2 rounded w-64 border-blue-300"
-                            />
-                            <button 
-                                type="button"
-                                onClick={handleSearch}
-                                className="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700"
-                            >
-                                <FontAwesomeIcon icon={faMagnifyingGlass} />
-                            </button>
-                        </div>
-                    </div>
-                    {/* <select 
-                        className="border p-2 rounded border-blue-300" 
-                        value={pageSize}
-                        onChange={(e) => setPageSize(parseInt(e.target.value))}
+                <div className="flex justify-between items-center mb-2">
+                    <button 
+                        className="bg-sky-600 text-white py-2 px-4 rounded font-bold hover:bg-sky-700"
+                        title='Đồng bộ dữ liệu với hệ thống HIS'
                     >
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={20}>20</option>
-                        <option value={50}>50</option>
-                    </select> */}
-                    <br />
+                        Đồng bộ dữ liệu
+                        &nbsp;<FontAwesomeIcon icon={faRotate} />
+                    </button>
 
-                    {/* Bảng danh sách */}
-                    <div className="overflow-x-auto">
-                        <table className="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
-                            <thead>
-                                <tr className="bg-sky-600 text-white">
-                                    <th className="border border-gray-200 p-3 text-center">STT</th>
-                                    <th className="border border-gray-200 p-3 text-left">Mã BS</th>
-                                    <th className="border border-gray-200 p-3 text-left">HH/HV</th>
-                                    <th className="border border-gray-200 p-3 text-left">Họ tên</th>
-                                    <th className="border border-gray-200 p-3 text-left">Chuyên khoa</th>
-                                    <th className="border border-gray-200 p-3 text-left">Tình trạng</th>
-                                    <th className="border border-gray-200 p-3 text-center"></th>
-                                </tr>
-                            </thead>
-                            <tbody key={key}>
-                                {doctors.length > 0 ? (
-                                    doctors.map((doctor, index) => (
-                                        <tr key={doctor.id} className="hover:bg-gray-100 transition duration-200 ease-in-out">
-                                            <td className="border border-gray-200 p-2 text-center">{index + 1 + (currentPage - 1) * pageSize}</td>
-                                            <td className="border border-gray-200 p-2">{doctor.id}</td>
-                                            <td className="border border-gray-200 p-2">{doctor.qualificationName}</td>
-                                            <td className="border border-gray-200 p-2">{doctor.fullName}</td>
+                    <div className="flex items-center space-x-2">
+                        <select 
+                            className="border p-2 rounded border-blue-300" 
+                            value={selectedSpecialty}
+                            onChange={(e) => setSelectedSpecialty(e.target.value)}
+                        >
+                            <option value="">Tất cả chuyên khoa</option>
+                            {specialties.map(specialty => (
+                                <option key={specialty.specialtyId} value={specialty.specialtyId}>
+                                    {specialty.specialtyName}
+                                </option>
+                            ))}
+                        </select>
 
-                                            <td className="border border-gray-200 p-2">
-                                                {doctor.specialties && doctor.specialties.length > 0
-                                                    ? doctor.specialties.map((specialty) => specialty.specialtyName).join(", ")
-                                                    : "Không có chuyên khoa"}
-                                            </td>
+                        {/* Thay đổi từ combobox "Học hàm/Học vị" thành "Trạng thái" */}
+                        <select 
+                            className="border p-2 rounded border-blue-300" 
+                            value={selectedStatus}
+                            onChange={(e) => setSelectedStatus(e.target.value)}
+                        >
+                            <option value="DangLamViec">Đang làm việc</option>
+                            <option value="NgungCongTac">Ngừng công tác</option>
+                            <option value="ChuyenCongTac">Chuyển công tác</option>
+                        </select>
 
-                                            <td className="border border-gray-200 p-2">{convertStatus(doctor.status)}</td>
+                        <input
+                            type="text"
+                            placeholder="Nhập từ khóa tìm kiếm"
+                            value={keyword}
+                            onChange={(e) => setKeyword(e.target.value)}
+                            className="border p-2 rounded w-64 border-blue-300"
+                        />
+                        <button 
+                            type="button"
+                            onClick={handleSearch}
+                            className="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700"
+                        >
+                            <FontAwesomeIcon icon={faMagnifyingGlass} />
+                        </button>
+                    </div>
+                </div>
+                <Outlet />
+                {/* <select 
+                    className="border p-2 rounded border-blue-300" 
+                    value={pageSize}
+                    onChange={(e) => setPageSize(parseInt(e.target.value))}
+                >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                    <option value={50}>50</option>
+                </select> */}
+                <br />
 
-                                            <td className="border border-gray-200 p-2 text-center">
-                                                <button className="bg-cyan-600 text-white px-3 py-1 rounded-md hover:bg-cyan-700 transition duration-75">
-                                                    Chi tiết 
-                                                    {/* &nbsp;<FontAwesomeIcon icon={faInfo} /> */}
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="7" className="text-center p-4">Không có dữ liệu</td>
+                {/* Bảng danh sách */}
+                <div className="overflow-x-auto">
+                    <table className="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
+                        <thead>
+                            <tr className="bg-sky-600 text-white">
+                                <th className="border border-gray-200 p-3 text-center">STT</th>
+                                <th className="border border-gray-200 p-3 text-left">Mã BS</th>
+                                <th className="border border-gray-200 p-3 text-left">HH/HV</th>
+                                <th className="border border-gray-200 p-3 text-left">Họ tên</th>
+                                <th className="border border-gray-200 p-3 text-left">Chuyên khoa</th>
+                                <th className="border border-gray-200 p-3 text-left">Tình trạng</th>
+                                <th className="border border-gray-200 p-3 text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody key={key}>
+                            {doctors.length > 0 ? (
+                                doctors.map((doctor, index) => (
+                                    <tr key={doctor.id} className="hover:bg-gray-100 transition duration-200 ease-in-out">
+                                        <td className="border border-gray-200 p-2 text-center">{index + 1 + (currentPage - 1) * pageSize}</td>
+                                        <td className="border border-gray-200 p-2">{doctor.id}</td>
+                                        <td className="border border-gray-200 p-2">{doctor.qualificationName}</td>
+                                        <td className="border border-gray-200 p-2">{doctor.fullName}</td>
+
+                                        <td className="border border-gray-200 p-2">
+                                            {doctor.specialties && doctor.specialties.length > 0
+                                                ? doctor.specialties.map((specialty) => specialty.specialtyName).join(", ")
+                                                : "Không có chuyên khoa"}
+                                        </td>
+
+                                        <td className="border border-gray-200 p-2">{convertStatus(doctor.status)}</td>
+
+                                        <td className="border border-gray-200 p-2 text-center">
+                                        <Link to={`${doctor.id}`}>
+                                            <button 
+                                                className="bg-cyan-600 text-white px-3 py-1 rounded-md hover:bg-cyan-700 transition duration-75"
+                                                // onClick={() => navigate(`/bac-si/danh-sach/${doctor.id}`)} // Điều hướng đến trang chi tiết bác sĩ
+                                            >
+                                                Chi tiết
+                                            </button>
+                                        </Link>
+                                        </td>
                                     </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div className="flex justify-between items-center mt-4">
-                        {/* Bên trái: Tổng số bác sĩ */}
-                        <div className="text-gray-600">
-                            Tổng số bác sĩ: <b>{totalElements}</b>
-                        </div>
-
-                        {/* Bên phải: Trang hiện tại / Tổng số trang */}
-                        <div className="text-gray-600">
-                            Trang {currentPage} / {totalPages}
-                        </div>
-                    </div>
-
-                    {/* Pagination */}
-                    <div className="flex justify-center mt-4 space-x-2">
-                        {getPageNumbers().map((pageNumber, index) =>
-                            typeof pageNumber === 'number' ? (
-                                <button
-                                    key={index}
-                                    onClick={() => setCurrentPage(pageNumber)}
-                                    style={currentPage === pageNumber ? { color: '#fff', backgroundColor: '#333' } : {}}
-                                    className="p-2 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition duration-200"
-                                >
-                                    {pageNumber}
-                                </button>
+                                ))
                             ) : (
-                                <span key={index} style={{ margin: '0 5px' }}>...</span>
-                            )
-                        )}
+                                <tr>
+                                    <td colSpan="7" className="text-center p-4">Không có dữ liệu</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+                <div className="flex justify-between items-center mt-4">
+                    {/* Bên trái: Tổng số bác sĩ */}
+                    <div className="text-gray-600">
+                        Tổng số bác sĩ: <b>{totalElements}</b>
                     </div>
-                </>
-            )}
+
+                    {/* Bên phải: Trang hiện tại / Tổng số trang */}
+                    <div className="text-gray-600">
+                        Trang {currentPage} / {totalPages}
+                    </div>
+                </div>
+
+                {/* Pagination */}
+                <div className="flex justify-center mt-4 space-x-2">
+                    {getPageNumbers().map((pageNumber, index) =>
+                        typeof pageNumber === 'number' ? (
+                            <button
+                                key={index}
+                                onClick={() => setCurrentPage(pageNumber)}
+                                style={currentPage === pageNumber ? { color: '#fff', backgroundColor: '#333' } : {}}
+                                className="p-2 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition duration-200"
+                            >
+                                {pageNumber}
+                            </button>
+                        ) : (
+                            <span key={index} style={{ margin: '0 5px' }}>...</span>
+                        )
+                    )}
+                </div>
+            </>
+            )
+            }
+            <Outlet />
         </div>
+        
     );
 }
 

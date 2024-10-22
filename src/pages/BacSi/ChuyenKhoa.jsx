@@ -94,7 +94,7 @@ function DanhSachChuyenKhoa() {
     };
 
     return (
-        <div style={{ padding: 20 }}>
+        <div>
             {loading ? (
                 <div className="flex justify-center">
                     <div className="spinner"></div> {/* Sử dụng spinner đơn giản */}

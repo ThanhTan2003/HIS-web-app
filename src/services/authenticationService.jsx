@@ -16,6 +16,23 @@ export const logIn = async (username, password) => {
   throw new Error("Xác thực thất bại!");
 };
 
+export const introspect = async () =>{
+  const token = getToken(); 
+  if(token === null)
+    return false;
+  const response = await httpClient.post(API.INTROSPECT, {
+    token: token
+  });
+
+  if(response.data?.valid === false)
+  {
+    removeToken();
+    return false;
+  }
+
+  return true;
+}
+
 export const logOut = () => {
   removeToken();
 };
