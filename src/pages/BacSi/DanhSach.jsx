@@ -4,6 +4,7 @@ import { getToken } from "../../services/localStorageService";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass, faRotate, faInfo } from '@fortawesome/free-solid-svg-icons'
 import { CONFIG } from '../../configurations/configuration';
+import BarcodeScanner from '../../features/quetMaVach/BarcodeScanner';
 
 function DanhSach() {
     const navigate = useNavigate();
@@ -23,6 +24,22 @@ function DanhSach() {
     const [selectedStatus, setSelectedStatus] = useState(""); // Lưu trạng thái đã chọn
 
     const { doctorId } = useParams();
+
+    const [showScanner, setShowScanner] = useState(false);
+
+    const handleBarcodeDetected = (barcode) => {
+        setKeyword(barcode); // Đặt mã vạch vào ô tìm kiếm
+        console.log(key)
+        setShowScanner(false); // Ẩn trình quét sau khi đã quét xong
+        // Thực hiện tìm kiếm với từ khóa là mã vạch đã quét
+        console.log(barcode)
+        console.log(key)
+        // handleSearch();
+      };
+
+      const handleCloseScanner = () => {
+        setShowScanner(false); // Đóng giao diện quét mã vạch
+      };
 
     // Hàm lấy thông tin người dùng và danh sách bác sĩ
     const getUserDetails = async (accessToken) => {
@@ -172,13 +189,13 @@ function DanhSach() {
 
                         <button 
                             type="button"
-                            // onClick={}
+                            onClick={() => setShowScanner(true)} // Hiển thị component quét mã vạch
                             className="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700"
                         >
                             <img 
-                                src='/icons/icon-scan-qr-code.png' 
-                                title="Quét mã vạch" 
-                                className="w-6 h-6"
+                            src='/icons/icon-scan-qr-code.png' 
+                            title="Quét mã vạch" 
+                            className="w-6 h-6"
                             />
                         </button>
 
@@ -187,6 +204,11 @@ function DanhSach() {
                             placeholder="Nhập từ khóa tìm kiếm"
                             value={keyword}
                             onChange={(e) => setKeyword(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleSearch(); // Thực hiện tìm kiếm khi nhấn Enter
+                                }
+                            }}
                             className="border p-2 rounded w-64 border-blue-300"
                         />
 
@@ -200,6 +222,9 @@ function DanhSach() {
                         </button>
                     </div>
                 </div>
+
+                {showScanner && <BarcodeScanner onDetected={handleBarcodeDetected} onClose={handleCloseScanner} />}
+
                 <Outlet />
                 <br />
 
