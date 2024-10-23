@@ -61,10 +61,21 @@ function ThongTinBacSi() {
     }
 
     return (
-        <div className="p-5">
+        <div className="p-4">
             {doctor ? (
                 <>
+                    {/* Nút quay lại danh sách */}
+                    <div className="flex justify-start">
+                        <button 
+                            onClick={() => navigate("/bac-si/danh-sach")}
+                            className=" py-1 px-3 rounded transition duration-300 text-blue-600 border border-blue-600 hover:bg-slate-100"
+                        >
+                            <FontAwesomeIcon icon={faAnglesLeft} />
+                        </button>
+                     </div>
+                     <br></br>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            
                         {/* Cột bên trái - thông tin bác sĩ */}
                         <div className="md:col-span-2">
                             <h1 className="text-2xl font-bold mb-4 text-blue-900">
@@ -72,13 +83,50 @@ function ThongTinBacSi() {
                                 {` ${doctor.fullName}`}
                             </h1>
                             <p className="text-lg mb-2"><strong>Mã bác sĩ:</strong> {doctor.id}</p>
-                            <p className="text-lg mb-2"><strong>Học hàm / Học vị:</strong> {doctor.qualifications && doctor.qualifications.length > 0 ? doctor.qualifications.map(qual => qual.name).join(", ") : "Không có thông tin"}</p>
-                            <p className="text-lg mb-2"><strong>Chuyên khoa:</strong> {doctor.specialties && doctor.specialties.length > 0 ? doctor.specialties.map(specialty => specialty.specialtyName).join(", ") : "Không có thông tin chuyên khoa"}</p>
+                            
+                            {/* Học hàm / Học vị */}
+                            <p className="text-lg mb-2">
+                                <strong>Học hàm / Học vị: </strong> 
+                                {doctor.qualifications && doctor.qualifications.length > 0 ? (
+                                    doctor.qualifications.length === 1 ? (
+                                        doctor.qualifications[0].name
+                                    ) : (
+                                        <ul className="list-disc ml-6">
+                                            {doctor.qualifications.map((qual, index) => (
+                                                <li key={index}>{qual.name}</li>
+                                            ))}
+                                        </ul>
+                                    )
+                                ) : (
+                                    "Không có thông tin!"
+                                )}
+                            </p>
+
+                            {/* Chuyên khoa */}
+                            <p className="text-lg mb-2">
+                                <strong>Chuyên khoa: </strong>
+                                {doctor.specialties && doctor.specialties.length > 0 ? (
+                                    doctor.specialties.length === 1 ? (
+                                        doctor.specialties[0].specialtyName
+                                    ) : (
+                                        <ul className="list-disc ml-6">
+                                            {doctor.specialties.map((specialty, index) => (
+                                                <li key={index}>{specialty.specialtyName}</li>
+                                            ))}
+                                        </ul>
+                                    )
+                                ) : (
+                                    "Không có thông tin chuyên khoa!"
+                                )}
+                            </p>
+
+                            <p className="text-lg mb-2"><strong>Giới tính:</strong> {doctor.gender}</p>
                             <p className="text-lg mb-2"><strong>Tình trạng:</strong> {convertStatus(doctor.status)}</p>
-                            <p className="text-lg mb-2"><strong>Điện thoại:</strong> {doctor.phoneNumber || "Không có thông tin"}</p>
-                            <p className="text-lg mb-2"><strong>Email:</strong> {doctor.email || "Không có thông tin"}</p>
-                            <p className="text-lg mb-2"><strong>Mô tả:</strong> {doctor.description || "Không có thông tin"}</p>
-                            <br></br>
+                            <p className="text-lg mb-2"><strong>Điện thoại:</strong> {doctor.phoneNumber || "Không có thông tin!"}</p>
+                            <p className="text-lg mb-2"><strong>Email:</strong> {doctor.email || "Không có thông tin!"}</p>
+                            <p className="text-lg mb-2"><strong>Mô tả:</strong> {doctor.description || "Không có thông tin!"}</p>
+
+                            <br />
 
                             <img 
                                 src={`https://barcode.tec-it.com/barcode.ashx?data=${doctor.id}&code=Code128&dpi=96`} 
@@ -86,16 +134,7 @@ function ThongTinBacSi() {
                                 className="mb-4 object-cover"
                             />
                             
-                            {/* Nút quay lại danh sách */}
-                            {/* <div className="flex justify-start mt-6">
-                                <button 
-                                    onClick={() => navigate("/bac-si/danh-sach")}
-                                    className=" py-2 px-6 rounded transition duration-300 text-blue-600 border border-blue-600 hover:bg-slate-100"
-                                >
-                                    <FontAwesomeIcon icon={faAnglesLeft} /> &nbsp;
-                                    Quay lại danh sách
-                                </button>
-                            </div> */}
+                            
                         </div>
                         
                         {/* Cột bên phải - ảnh bác sĩ và mã vạch */}
@@ -123,6 +162,7 @@ function ThongTinBacSi() {
                                     <th className="border border-gray-200 p-3 text-left">Tên dịch vụ</th>
                                     <th className="border border-gray-200 p-3 text-left">Chuyên khoa</th>
                                     <th className="border border-gray-200 p-3 text-left">Phân loại</th>
+                                    <th className="border border-gray-200 p-3 text-left">Tình trạng</th>
                                     <th className="border border-gray-200 p-3 text-center"></th>
                                 </tr>
                             </thead>

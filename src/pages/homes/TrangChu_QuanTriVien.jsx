@@ -75,7 +75,7 @@ const Sidebar = ({ selectedPage, setSelectedPage }) => {
 // Main Content Component
 const MainContent = () => {
   return (
-    <div className="ml-64 w-full p-5">
+    <div className="ml-64 w-full px-5 pb-5">
       <Routes>
         <Route index element={<TrangChu />} />
         <Route path="/home/*" element={<TrangChu />} />

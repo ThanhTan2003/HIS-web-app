@@ -170,6 +170,18 @@ function DanhSach() {
                             <option value="ChuyenCongTac">Chuyển công tác</option>
                         </select>
 
+                        <button 
+                            type="button"
+                            // onClick={}
+                            className="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700"
+                        >
+                            <img 
+                                src='/icons/icon-scan-qr-code.png' 
+                                title="Quét mã vạch" 
+                                className="w-6 h-6"
+                            />
+                        </button>
+
                         <input
                             type="text"
                             placeholder="Nhập từ khóa tìm kiếm"
@@ -177,6 +189,8 @@ function DanhSach() {
                             onChange={(e) => setKeyword(e.target.value)}
                             className="border p-2 rounded w-64 border-blue-300"
                         />
+
+
                         <button 
                             type="button"
                             onClick={handleSearch}
@@ -187,16 +201,6 @@ function DanhSach() {
                     </div>
                 </div>
                 <Outlet />
-                {/* <select 
-                    className="border p-2 rounded border-blue-300" 
-                    value={pageSize}
-                    onChange={(e) => setPageSize(parseInt(e.target.value))}
-                >
-                    <option value={5}>5</option>
-                    <option value={10}>10</option>
-                    <option value={20}>20</option>
-                    <option value={50}>50</option>
-                </select> */}
                 <br />
 
                 {/* Bảng danh sách */}
