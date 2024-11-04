@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "../pages/Login";
 import Home from "../pages/homes/Home";
-import BacSi from "../pages/menu/quanTriVien/BacSi"
 
 const AppRoutes = () => {
   return (

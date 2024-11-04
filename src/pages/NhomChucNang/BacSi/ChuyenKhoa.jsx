@@ -1,17 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
-import { getToken } from "../../services/localStorageService";
-import { CONFIG } from '../../configurations/configuration';
+import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
+import { getToken } from "../../../services/localStorageService";
+import { CONFIG } from '../../../configurations/configuration';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMagnifyingGlass, faRotate, faInfo } from '@fortawesome/free-solid-svg-icons'
 
 function DanhSachChuyenKhoa() {
     const navigate = useNavigate();
+
     const [specialties, setSpecialties] = useState([]);
+
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(10);
     const [totalElements, setTotalElements] = useState(0);
+
     const [loading, setLoading] = useState(false);
-    const [keyword, setKeyword] = useState(""); // State để lưu từ khóa tìm kiếm
+    const [keyword, setKeyword] = useState("");
+
+    const { specialtyId } = useParams();
 
     // Hàm lấy danh sách chuyên khoa từ API
     const getSpecialties = async (accessToken) => {
@@ -52,6 +60,7 @@ function DanhSachChuyenKhoa() {
             navigate("/login");
         } else {
             getSpecialties(accessToken); // Lấy danh sách chuyên khoa
+            window.scrollTo(0, 0);
         }
     }, [navigate, currentPage, pageSize]);
 
@@ -95,15 +104,15 @@ function DanhSachChuyenKhoa() {
 
     return (
         <div>
-            {loading ? (
-                <div className="flex justify-center">
-                    <div className="spinner"></div> {/* Sử dụng spinner đơn giản */}
-                </div>
-            ) : (
+            {!specialtyId && (
                 <>
                     <div className="flex justify-between items-center mb-2">
-                        <button className="bg-sky-600 text-white py-2 px-4 rounded font-bold hover:bg-sky-700">
+                        <button
+                            className="bg-sky-600 text-white py-2 px-4 rounded font-bold hover:bg-sky-700"
+                            title='Đồng bộ dữ liệu với hệ thống HIS'
+                        >
                             Đồng bộ dữ liệu
+                            &nbsp;<FontAwesomeIcon icon={faRotate} />
                         </button>
 
                         {/* Input tìm kiếm và nút tìm kiếm */}
@@ -115,12 +124,12 @@ function DanhSachChuyenKhoa() {
                                 onChange={(e) => setKeyword(e.target.value)}
                                 className="border p-2 rounded w-64 border-blue-300"
                             />
-                            <button 
+                            <button
                                 type="button"
                                 onClick={handleSearch}
                                 className="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700"
                             >
-                                Tìm kiếm
+                                <FontAwesomeIcon icon={faMagnifyingGlass} />
                             </button>
                         </div>
                     </div>
@@ -143,11 +152,13 @@ function DanhSachChuyenKhoa() {
                                         <tr key={specialty.specialtyId} className="hover:bg-gray-100 transition duration-200 ease-in-out">
                                             <td className="border border-gray-200 p-2 text-center">{index + 1 + (currentPage - 1) * pageSize}</td>
                                             <td className="border border-gray-200 p-2">{specialty.specialtyId}</td>
-                                            <td className="border border-gray-200 p-2">{specialty.specialtyName}</td>
+                                            <td className="border border-gray-200 p-2 text-zinc-700"><b>{specialty.specialtyName}</b></td>
                                             <td className="border border-gray-200 p-2 text-center">
-                                                <button className="bg-cyan-600 text-white px-3 py-1 rounded-md hover:bg-cyan-700 transition duration-75">
-                                                    Chi tiết
-                                                </button>
+                                                <Link to={`${specialty.specialtyId}`}>
+                                                    <button className="bg-cyan-600 text-white px-3 py-1 rounded-md hover:bg-cyan-700 transition duration-75">
+                                                        Chi tiết
+                                                    </button>
+                                                </Link>
                                             </td>
                                         </tr>
                                     ))
@@ -190,6 +201,7 @@ function DanhSachChuyenKhoa() {
                     </div>
                 </>
             )}
+            <Outlet />
         </div>
     );
 }

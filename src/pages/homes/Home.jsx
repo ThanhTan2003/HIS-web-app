@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getToken } from "../../services/localStorageService";
 import { introspect } from "../../services/authenticationService";
-import TrangChu_QuanTriVien from "./TrangChu_QuanTriVien";
+import TrangChu_GiamDocDieuHanh from "./TrangChu_GiamDocDieuHanh";
 import TrangChu_BacSi from "./TrangChu_BacSi";
 import { CONFIG, API } from "../../configurations/configuration";
+import Error from "./Error";
 
 const Home = () => {
 
@@ -45,12 +46,12 @@ const Home = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
-  return userDetails?.roleId === "QuanTriVien" ? (
-    <TrangChu_QuanTriVien />
+  return userDetails?.roleId === "GiamDoc" ? (
+    <TrangChu_GiamDocDieuHanh />
   ) : userDetails?.roleId === "BacSi" ? (
     <TrangChu_BacSi />
   ) : (
-    <div>Role không hợp lệ!</div>
+    <Error />
   );
 };
 

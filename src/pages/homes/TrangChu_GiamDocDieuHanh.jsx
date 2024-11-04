@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {Routes, Route, Outlet, useLocation} from 'react-router-dom'
 import NotFound from '../NotFound'
-import BacSi from '../menu/quanTriVien/BacSi';
-import BenhNhan from '../menu/quanTriVien/BenhNhan';
-import DichVu from '../menu/quanTriVien/DichVu';
-import HoSoBenhAn from '../menu/quanTriVien/HoSoBenhAn';
-import LichKhamBenh from '../menu/quanTriVien/LichKhamBenh';
-import PhongKham from '../menu/quanTriVien/PhongKham';
-import QuanLyTaiKhoan from '../menu/quanTriVien/QuanLyTaiKhoan';
-import TrangChu from '../menu/quanTriVien/TrangChu';
+import BacSi from '../menu/giamDocDieuHanh/BacSi';
+import BenhNhan from '../menu/giamDocDieuHanh/BenhNhan';
+import DichVu from '../menu/giamDocDieuHanh/DichVu';
+import HoSoBenhAn from '../menu/giamDocDieuHanh/HoSoBenhAn';
+import LichKhamBenh from '../menu/giamDocDieuHanh/LichKhamBenh';
+import PhongKham from '../menu/giamDocDieuHanh/PhongKham';
+import QuanLyTaiKhoan from '../menu/giamDocDieuHanh/QuanLyTaiKhoan';
+import TrangChu from '../menu/giamDocDieuHanh/TrangChu';
 import { useNavigate } from 'react-router-dom';
 import { logOut } from '../../services/authenticationService';
 
@@ -23,7 +23,7 @@ const menuItems = [
   { id: 'LichKhamBenh', label: 'Lịch khám bệnh', icon: faCalendarDays, path: 'lich-kham-benh' },
   { id: 'BenhNhan', label: 'Bệnh nhân', icon: faHospitalUser, path: 'benh-nhan' },
   { id: 'HoSoBenhAn', label: 'Hồ sơ bệnh án', icon: faFolderOpen, path: 'ho-so-benh-an' },
-  { id: 'QuanLyTaiKhoan', label: 'Quản lý tài khoản', icon: faUserGear, path: 'quan-ly-tai-khoan' },
+  { id: 'QuanLyTaiKhoan', label: 'Quản lý tài khoản', icon: faUserGear, path: 'tai-khoan' },
 ];
 
 // Sidebar Component
@@ -85,7 +85,7 @@ const MainContent = () => {
         <Route path="/lich-kham-benh/*" element={<LichKhamBenh />} />
         <Route path="/benh-nhan/*" element={<BenhNhan />} />
         <Route path="/ho-so-benh-an/*" element={<HoSoBenhAn />} />
-        <Route path="/quan-ly-tai-khoan/*" element={<QuanLyTaiKhoan />} />
+        <Route path="/tai-khoan/*" element={<QuanLyTaiKhoan />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
 

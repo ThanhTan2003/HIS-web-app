@@ -1,5 +1,5 @@
 export const CONFIG = {
-    API_GATEWAY: "http://192.168.69.106:8080/api/v1",
+    API_GATEWAY: "http://localhost:8080/api/v1",
   };
   
   export const API = {

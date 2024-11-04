@@ -1,40 +1,42 @@
 import React, { useEffect, useState } from 'react';
+
 import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
-import { getToken } from "../../services/localStorageService";
+
+import { getToken } from "../../../services/localStorageService";
+import { CONFIG } from '../../../configurations/configuration';
+import BarcodeScanner from '../../../features/quetMaVach/BarcodeScanner';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass, faRotate, faInfo } from '@fortawesome/free-solid-svg-icons'
-import { CONFIG } from '../../configurations/configuration';
-import BarcodeScanner from '../../features/quetMaVach/BarcodeScanner';
+
 
 function DanhSach() {
     const navigate = useNavigate();
-    const [doctors, setDoctors] = useState([]);
+    
+    const [services, setServices] = useState([]);
+
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [totalElements, setTotalElements] = useState(0);
+
     const [keyword, setKeyword] = useState("");
-    const [loading, setLoading] = useState(false);
     const [key, setKey] = useState(0); 
 
-    // State để lưu danh sách chuyên khoa
     const [specialties, setSpecialties] = useState([]);
+    const [typeOfServices, setTypeOfServices] = useState([]);
 
-    const [selectedSpecialty, setSelectedSpecialty] = useState(""); // Lưu chuyên khoa đã chọn
-    const [selectedStatus, setSelectedStatus] = useState(""); // Lưu trạng thái đã chọn
+    const [selectedSpecialty, setSelectedSpecialty] = useState("");
+    const [selectedTypeOfServices, setSelectedTypeOfServices] = useState("");
 
-    const { doctorId } = useParams();
+    const { serviceId } = useParams();
 
     const [showScanner, setShowScanner] = useState(false);
 
     const handleBarcodeDetected = (barcode) => {
         setKeyword(barcode); // Đặt mã vạch vào ô tìm kiếm
-        console.log(key)
+        
         setShowScanner(false); // Ẩn trình quét sau khi đã quét xong
-        // Thực hiện tìm kiếm với từ khóa là mã vạch đã quét
-        console.log(barcode)
-        console.log(key)
-        // handleSearch();
       };
 
       const handleCloseScanner = () => {
@@ -42,11 +44,10 @@ function DanhSach() {
       };
 
     // Hàm lấy thông tin người dùng và danh sách bác sĩ
-    const getUserDetails = async (accessToken) => {
+    const getListServices = async (accessToken) => {
         try {
-            setLoading(true);
             const response = await fetch(
-              `${CONFIG.API_GATEWAY}/doctor/search?keyword=${keyword}&page=${currentPage}&size=${pageSize}&specialty=${selectedSpecialty}&status=${selectedStatus}`,
+              `${CONFIG.API_GATEWAY}/medical/service/search?keyword=${keyword}&page=${currentPage}&size=${pageSize}`,
               {
                 method: "GET",
                 headers: {
@@ -60,9 +61,8 @@ function DanhSach() {
                 navigate("/login");
                 return;
             }
-
             const data = await response.json();
-            setDoctors(data.data || []);
+            setServices(data.data || []);
             setTotalPages(data.totalPages);
             setCurrentPage(data.currentPage);
             setPageSize(data.pageSize);
@@ -70,7 +70,7 @@ function DanhSach() {
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
-            setLoading(false);
+
         }
     };
 
@@ -90,15 +90,33 @@ function DanhSach() {
         }
     };
 
+    // Lấy danh sáchloại dịch vụ từ API
+    const getTypeOfServices = async (accessToken) => {
+      try {
+          const response = await fetch(`${CONFIG.API_GATEWAY}/medical/service-type/get-all?page=1&size=100`, {
+              method: "GET",
+              headers: {
+                  Authorization: `Bearer ${accessToken}`,
+              },
+          });
+          const data = await response.json();
+          setTypeOfServices(data.data || []);
+      } catch (error) {
+          console.error("Error fetching specialties:", error);
+      }
+  };
+
     useEffect(() => {
         const accessToken = getToken();
         if (!accessToken) {
             navigate("/login");
         } else {
-            getUserDetails(accessToken); // Lấy thông tin người dùng và bác sĩ
-            getSpecialties(accessToken); // Lấy danh sách chuyên khoa
+          getListServices(accessToken);
+          getSpecialties(accessToken);
+          getTypeOfServices(accessToken);
+          window.scrollTo(0, 0);
         }
-    }, [navigate, currentPage, pageSize, selectedSpecialty, selectedStatus]);
+    }, [navigate, currentPage, pageSize, selectedSpecialty, selectedTypeOfServices]);
 
     // Hàm để tạo số trang hiển thị
     const getPageNumbers = () => {
@@ -133,25 +151,17 @@ function DanhSach() {
     const handleSearch = () => {
         setCurrentPage(1);
         setKey(prevKey => prevKey + 1); 
-        getUserDetails(getToken());
+        getListServices(getToken());
     };
 
-    const convertStatus = (status) => {
-        switch (status) {
-            case "DangLamViec":
-                return "Đang làm việc";
-            case "NgungCongTac":
-                return "Ngừng công tác";
-            case "ChuyenCongTac":
-                return "Chuyển công tác";
-            default:
-                return "Không rõ";
-        }
-    };
+    // Hàm chuyển đổi chuỗi tiếng Việt thành chuỗi không dấu
+  const removeVietnameseTones = (str) => {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+  };
 
     return (
         <div>
-            {!doctorId &&(
+            {!serviceId &&(
                 <>
                 <div className="flex justify-between items-center mb-2">
                     <button 
@@ -179,12 +189,15 @@ function DanhSach() {
                         {/* Thay đổi từ combobox "Học hàm/Học vị" thành "Trạng thái" */}
                         <select 
                             className="border p-2 rounded border-blue-300" 
-                            value={selectedStatus}
-                            onChange={(e) => setSelectedStatus(e.target.value)}
+                            value={selectedTypeOfServices}
+                            onChange={(e) => setSelectedTypeOfServices(e.target.value)}
                         >
-                            <option value="DangLamViec">Đang làm việc</option>
-                            <option value="NgungCongTac">Ngừng công tác</option>
-                            <option value="ChuyenCongTac">Chuyển công tác</option>
+                            <option value="">Tất cả tình trạng</option>
+                            {typeOfServices.map(serviceType => (
+                                <option key={serviceType.id} value={serviceType.id}>
+                                    {serviceType.name}
+                                </option>
+                            ))}
                         </select>
 
                         <button 
@@ -225,7 +238,6 @@ function DanhSach() {
 
                 {showScanner && <BarcodeScanner onDetected={handleBarcodeDetected} onClose={handleCloseScanner} />}
 
-                <Outlet />
                 <br />
 
                 {/* Bảng danh sách */}
@@ -234,33 +246,32 @@ function DanhSach() {
                         <thead>
                             <tr className="bg-sky-600 text-white">
                                 <th className="border border-gray-200 p-3 text-center">STT</th>
-                                <th className="border border-gray-200 p-3 text-left">Mã BS</th>
-                                <th className="border border-gray-200 p-3 text-left">HH/HV</th>
-                                <th className="border border-gray-200 p-3 text-left">Họ tên</th>
+                                <th className="border border-gray-200 p-3 text-left">Tên dịch vụ</th>
                                 <th className="border border-gray-200 p-3 text-left">Chuyên khoa</th>
+                                <th className="border border-gray-200 p-3 text-left">Phân loại</th>
                                 <th className="border border-gray-200 p-3 text-left">Tình trạng</th>
                                 <th className="border border-gray-200 p-3 text-center"></th>
                             </tr>
                         </thead>
                         <tbody key={key}>
-                            {doctors.length > 0 ? (
-                                doctors.map((doctor, index) => (
-                                    <tr key={doctor.id} className="hover:bg-gray-100 transition duration-200 ease-in-out">
+                            {services.length > 0 ? (
+                                services.map((service, index) => (
+                                    <tr key={service.id} className="hover:bg-gray-100 transition duration-200 ease-in-out">
                                         <td className="border border-gray-200 p-2 text-center">{index + 1 + (currentPage - 1) * pageSize}</td>
-                                        <td className="border border-gray-200 p-2">{doctor.id}</td>
-                                        <td className="border border-gray-200 p-2">{doctor.qualificationName}</td>
-                                        <td className="border border-gray-200 p-2">{doctor.fullName}</td>
+                                        <td className="border border-gray-200 p-2 text-zinc-700"><b>{service.name}</b></td>
+                                        <td className="border border-gray-200 p-2">{service.specialtyId ? service.specialtyId : '...'}</td>
 
-                                        <td className="border border-gray-200 p-2">
-                                            {doctor.specialties && doctor.specialties.length > 0
-                                                ? doctor.specialties.map((specialty) => specialty.specialtyName).join(", ")
-                                                : "Không có chuyên khoa"}
+                                        <td className="border border-gray-200 p-2">{service.serviceType.name ? service.serviceType.name : '...'}</td>
+
+                                        <td className={`border border-gray-200 p-2 font-bold 
+                                            ${removeVietnameseTones(service.status) === 'Dang hoat dong' ? 'text-green-800' :
+                                                removeVietnameseTones(service.status) === 'Ngung cong tac' ? 'text-red-800' :
+                                                removeVietnameseTones(service.status) === 'Chuyen cong tac' ? 'text-orange-800' : ''}`}>
+                                            {service.status}
                                         </td>
 
-                                        <td className="border border-gray-200 p-2">{convertStatus(doctor.status)}</td>
-
                                         <td className="border border-gray-200 p-2 text-center">
-                                        <Link to={`${doctor.id}`}>
+                                        <Link to={`${service.id}`}>
                                             <button 
                                                 className="bg-cyan-600 text-white px-3 py-1 rounded-md hover:bg-cyan-700 transition duration-75"
                                                 // onClick={() => navigate(`/bac-si/danh-sach/${doctor.id}`)} // Điều hướng đến trang chi tiết bác sĩ
@@ -282,7 +293,7 @@ function DanhSach() {
                 <div className="flex justify-between items-center mt-4">
                     {/* Bên trái: Tổng số bác sĩ */}
                     <div className="text-gray-600">
-                        Tổng số bác sĩ: <b>{totalElements}</b>
+                        Tổng số dịch vụ: <b>{totalElements}</b>
                     </div>
 
                     {/* Bên phải: Trang hiện tại / Tổng số trang */}

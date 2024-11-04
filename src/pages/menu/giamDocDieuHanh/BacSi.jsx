@@ -3,12 +3,13 @@ import { Route, Routes, Outlet, useNavigate, useLocation } from 'react-router-do
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartSimple, faUsers, faDna, faUserDoctor } from '@fortawesome/free-solid-svg-icons';
 
-import DanhSach from '../../BacSi/DanhSach';
-import ThongKe from '../../BacSi/ThongKe';
-import ChuyenKhoa from '../../BacSi/ChuyenKhoa';
-import NghiPhep from '../../BacSi/NghiPhep';
+import DanhSach from '../../NhomChucNang/BacSi/DanhSach';
+import ThongKe from '../../NhomChucNang/BacSi/ThongKe';
+import ChuyenKhoa from '../../NhomChucNang/BacSi/ChuyenKhoa';
+import NghiPhep from '../../NhomChucNang/BacSi/NghiPhep';
 import NotFound from '../../NotFound';
-import ThongTinBacSi from '../../BacSi/ThongTinBacSi';
+import ThongTinBacSi from '../../NhomChucNang/BacSi/ThongTinBacSi';
+import ThongTinChuyenKhoa from '../../NhomChucNang/BacSi/ThongTinChuyenKhoa';
 
 // Config cho tab
 const tabConfig = [
@@ -21,9 +22,9 @@ const tabConfig = [
 // Component hiển thị menu tab
 function TabMenu({ selectedTab, setSelectedTab }) {
   const navigate = useNavigate();
-  
+
   return (
-    <div className="bg-white flex justify-start space-x-4 mt-4 w-full rounded text-gray-700 shadow">
+    <div className="bg-slate-100 flex justify-start space-x-4 w-full rounded text-gray-700 shadow">
       {tabConfig.map((tab, index) => (
         <button
           key={index}
@@ -55,27 +56,33 @@ function BacSi() {
   return (
     <div className="w-full min-h-screen flex flex-col">
       {/* Header */}
-      <div className="bg-blue-600 text-white p-2 px-3 py-3 w-full rounded text-left font-bold">
+      <div className="bg-blue-600 text-white p-2 px-3 py-3 w-full rounded text-left font-bold sticky top-0 z-10">
         <h1>QUẢN LÝ THÔNG TIN BÁC SĨ</h1>
       </div>
 
       {/* Tab menu */}
-      <TabMenu selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+      <div className="sticky top-[48px] z-10">
+        <TabMenu selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+      </div>
+      
 
       {/* Content */}
       <div className="flex-1 bg-white mt-4 p-4 rounded shadow w-full">
         <Routes>
-            <Route index element={<ThongKe />} /> 
-            <Route path='thong-ke' element={<ThongKe />} />
-            <Route path='danh-sach' element={<DanhSach />}>
-                <Route path=':doctorId' element={<ThongTinBacSi />} />
-                <Route path="*" element={<NotFound />} />
-            </Route>
-            <Route path='chuyen-khoa' element={<ChuyenKhoa />} />
-            <Route path='nghi-phep' element={<NghiPhep />} />
+          <Route index element={<ThongKe />} />
+          <Route path='thong-ke' element={<ThongKe />} />
+          <Route path='danh-sach' element={<DanhSach />}>
+            <Route path=':doctorId' element={<ThongTinBacSi />} />
             <Route path="*" element={<NotFound />} />
+          </Route>
+          <Route path='chuyen-khoa' element={<ChuyenKhoa />}>
+            <Route path=':specialtyId' element={<ThongTinChuyenKhoa />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
+          <Route path='nghi-phep' element={<NghiPhep />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
-        
+
         <Outlet />
       </div>
     </div>
