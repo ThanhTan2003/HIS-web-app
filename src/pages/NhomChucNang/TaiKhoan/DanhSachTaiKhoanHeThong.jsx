@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from 'react';
+
 import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
+
 import { getToken } from "../../../services/localStorageService";
 import { CONFIG } from '../../../configurations/configuration';
+
 import BarcodeScanner from '../../../features/quetMaVach/BarcodeScanner';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagnifyingGlass, faRotate } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faPlus, faInfo, faPen, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+
+import ThongTinTaiKhoanHeThong from './ThongTinTaiKhoanHeThong';
+import ThemTaiKhoan from './ThemTaiKhoan';
+import CapNhatTaiKhoan from './CapNhatTaiKhoan';
+
 
 function DanhSach() {
     const navigate = useNavigate();
-    
+
     const [users, setUsers] = useState([]);
     const [roles, setRoles] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
@@ -16,9 +25,42 @@ function DanhSach() {
     const [pageSize, setPageSize] = useState(10);
     const [totalElements, setTotalElements] = useState(0);
     const [keyword, setKeyword] = useState("");
-    const [key, setKey] = useState(0); 
+    const [key, setKey] = useState(0);
     const [selectedRole, setSelectedRole] = useState("");
     const [showScanner, setShowScanner] = useState(false);
+
+    const [showModalDetail, setShowModalDetail] = useState(false);
+    const [showModalUpdate, setShowModalUpfate] = useState(false);
+    const [showModalDeleta, setShowModalDelete] = useState(false);
+    const [showModalAdd, setShowModalAdd] = useState(false);
+
+    const [showModal, setShowModal] = useState(false);
+    const [selectedUserName, setSelectedUserName] = useState(null);
+
+    const openModalDetail = (userName) => {
+        setSelectedUserName(userName);
+        setShowModalDetail(true);
+    };
+
+    const closeModalDetail = () => {
+        setSelectedUserName(null);
+        setShowModalDetail(false);
+    };
+
+    const openModalAdd = () => {
+        setShowModalAdd(true);
+    };
+
+    const closeModalAdd = () => {
+        setShowModalAdd(false);
+    };
+
+    const handleAddSuccess = () => {
+        // Refresh the user list after successfully adding a new account
+        const accessToken = getToken();
+        getUsers(accessToken); // Gọi lại API để lấy danh sách mới nhất
+        closeModalAdd(); // Đóng modal
+    };
 
     const { userId } = useParams();
 
@@ -120,7 +162,7 @@ function DanhSach() {
     // Khi nhấn nút tìm kiếm
     const handleSearch = () => {
         setCurrentPage(1);
-        setKey(prevKey => prevKey + 1); 
+        setKey(prevKey => prevKey + 1);
         getUsers(getToken());
     };
 
@@ -134,17 +176,17 @@ function DanhSach() {
             {!userId && (
                 <>
                     <div className="flex justify-between items-center mb-2">
-                        <button 
+                        <button
+                            onClick={openModalAdd} // Gọi openModalAdd khi nhấn
                             className="bg-sky-600 text-white py-2 px-4 rounded font-bold hover:bg-sky-700"
-                            title='Đồng bộ dữ liệu với hệ thống HIS'
+                            title="Thêm tài khoản mới"
                         >
-                            Đồng bộ dữ liệu
-                            &nbsp;<FontAwesomeIcon icon={faRotate} />
+                            Thêm tài khoản mới &nbsp;<FontAwesomeIcon icon={faPlus} />
                         </button>
 
                         <div className="flex items-center space-x-2">
-                            <select 
-                                className="border p-2 rounded border-blue-300" 
+                            <select
+                                className="border p-2 rounded border-blue-300"
                                 value={selectedRole}
                                 onChange={(e) => setSelectedRole(e.target.value)}
                             >
@@ -156,17 +198,30 @@ function DanhSach() {
                                 ))}
                             </select>
 
-                            <button 
+                            <select
+                                className="border p-2 rounded border-blue-300"
+                                value={selectedRole}
+                                onChange={(e) => setSelectedRole(e.target.value)}
+                            >
+                                <option value="">Tất cả trạng thái</option>
+                                {roles.map(role => (
+                                    <option key={role.id} value={role.id}>
+                                        {role.name}
+                                    </option>
+                                ))}
+                            </select>
+
+                            {/* <button
                                 type="button"
                                 onClick={() => setShowScanner(true)} // Hiển thị component quét mã vạch
                                 className="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700"
                             >
-                                <img 
-                                src='/icons/icon-scan-qr-code.png' 
-                                title="Quét mã vạch" 
-                                className="w-6 h-6"
+                                <img
+                                    src='/icons/icon-scan-qr-code.png'
+                                    title="Quét mã vạch"
+                                    className="w-6 h-6"
                                 />
-                            </button>
+                            </button> */}
 
                             <input
                                 type="text"
@@ -182,7 +237,7 @@ function DanhSach() {
                             />
 
 
-                            <button 
+                            <button
                                 type="button"
                                 onClick={handleSearch}
                                 className="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700"
@@ -203,7 +258,7 @@ function DanhSach() {
                                 <tr className="bg-sky-600 text-white">
                                     <th className="border border-gray-200 p-3 text-center">STT</th>
                                     <th className="border border-gray-200 p-3 text-left">Tên tài khoản</th>
-                                    <th className="border border-gray-200 p-3 text-left">Tên đầy đủ</th>
+                                    <th className="border border-gray-200 p-3 text-left">Tên người dùng</th>
                                     <th className="border border-gray-200 p-3 text-left">Loại tài khoản</th>
                                     <th className="border border-gray-200 p-3 text-left">Tình trạng</th>
                                     <th className="border border-gray-200 p-3 text-center"></th>
@@ -220,19 +275,47 @@ function DanhSach() {
 
                                             <td className={`border border-gray-200 p-2 font-bold 
                                                 ${removeVietnameseTones(user.status) === 'Dang hoat dong' ? 'text-green-800' :
-                                                removeVietnameseTones(user.status) === 'Ngung hoat dong' ? 'text-red-800' :
-                                                removeVietnameseTones(user.status) === 'Dang bao tri' ? 'text-orange-800' : ''}`}>
+                                                    removeVietnameseTones(user.status) === 'Ngung hoat dong' ? 'text-red-800' :
+                                                        removeVietnameseTones(user.status) === 'Dang bao tri' ? 'text-orange-800' : ''}`}>
                                                 {user.status}
                                             </td>
 
                                             <td className="border border-gray-200 p-2 text-center">
                                                 <Link to={`${user.userName}`}>
-                                                    <button 
+                                                    <button
+                                                        onClick={() => openModalDetail(user.userName)}
                                                         className="bg-cyan-600 text-white px-3 py-1 rounded-md hover:bg-cyan-700 transition duration-75"
+                                                    // className="text-cyan-600 px-3 py-1 rounded-md border border-cyan-600 hover:bg-cyan-600 hover:text-white transition duration-75"
                                                     >
-                                                        Chi tiết
+                                                        Xem
+                                                        {/* &nbsp; <FontAwesomeIcon icon={faInfo} /> */}
                                                     </button>
                                                 </Link>
+
+                                                &nbsp;&nbsp;
+
+                                                <Link to={`${user.userName}`}>
+                                                    <button
+                                                        onClick={() => openModalDetail(user.userName)}
+                                                        className="bg-teal-600 text-white px-3 py-1 rounded-md hover:bg-teal-700 transition duration-75"
+                                                    >
+                                                        Sửa
+                                                        {/* &nbsp; <FontAwesomeIcon icon={faPen} /> */}
+                                                    </button>
+                                                </Link>
+
+                                                &nbsp;&nbsp;
+
+                                                <Link to={`${user.userName}`}>
+                                                    <button
+                                                        onClick={() => openModalDetail(user.userName)}
+                                                        className="bg-rose-600 text-white px-3 py-1 rounded-md hover:bg-rose-700 transition duration-75"
+                                                    >
+                                                        Xóa
+                                                        {/* &nbsp; <FontAwesomeIcon icon={faTrashCan} /> */}
+                                                    </button>
+                                                </Link>
+
                                             </td>
                                         </tr>
                                     ))
@@ -244,6 +327,20 @@ function DanhSach() {
                             </tbody>
                         </table>
                     </div>
+                    {showModalDetail &&
+                        <ThongTinTaiKhoanHeThong
+                            isOpen={showModalDetail}
+                            onClose={closeModalDetail}
+                            userName={selectedUserName}
+                        />
+                    }
+                    {showModalAdd && (
+                        <ThemTaiKhoan
+                            isOpen={showModalAdd}
+                            onClose={closeModalAdd}
+                            onCreateSuccess={handleAddSuccess}
+                        />
+                    )}
                     <div className="flex justify-between items-center mt-4">
                         <div className="text-gray-600">
                             Tổng số tài khoản: <b>{totalElements}</b>

@@ -1,23 +1,62 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getToken, setToken } from '../services/localStorageService';
-import { logIn } from '../services/authenticationService';
 import { CONFIG, API } from '../configurations/configuration';
+
+import { ToastContainer, toast, Zoom, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState(''); // Đã sửa
+    const [lastUsername, setLastUsername] = useState('');
+    const [lastPassword, setLastPassword] = useState('');
+
+    const showError = (error) => {
+        toast.error(error, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+    };
+
+    const showInfo= (info) =>{
+        toast.info(info, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+    }
 
     const handleSubmit = async (event) => {
-        event.preventDefault(); // Ngăn hành động mặc định của form
+        event.preventDefault();
+
+        // Kiểm tra nếu người dùng chưa nhập username hoặc password
+        if (!username || !password) {
+            showInfo('Vui lòng điền đầy đủ thông tin đăng nhập!');
+            return;
+        }
+
+        // Kiểm tra nếu username và password giống với lần trước đó
+        if (username === lastUsername && password === lastPassword) {
+            showError('Thông tin đăng nhập không đúng. Vui lòng kiểm tra lại!');
+            return;
+        }
 
         try {
             const response = await fetch(`${CONFIG.API_GATEWAY}${API.LOGIN}`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json", // Set the content type to JSON
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
                     userName: username,
@@ -25,30 +64,45 @@ const Login = () => {
                 }),
             });
 
-            if (!response.ok) {
-                throw new Error("Tài khoản không hợp lệ. Vui lòng kiểm tra lại");
-            }
-
             const data = await response.json();
 
-            console.log("Response body:", data);
-
-            // Kiểm tra nếu người dùng được xác thực
-            if (data.authenticated) {
-                setToken(data.token); // Lưu token vào localStorage
-                navigate("/"); // Điều hướng về trang chủ
-            } else {
-                throw new Error("Thông tin đăng nhập không đúng. Vui lòng kiểm tra lại!");
+            // Nếu thông tin đăng nhập không hợp lệ
+            if (!response.ok || !data.authenticated) {
+                // Cập nhật lại thông tin đăng nhập cuối cùng
+                setLastUsername(username);
+                setLastPassword(password);
+                
+                showError('Thông tin đăng nhập không đúng. Vui lòng kiểm tra lại!');
+                return;
             }
+
+            // Xác thực thành công, lưu token và điều hướng đến trang chính
+            setToken(data.token);
+            navigate("/");
+
         } catch (error) {
-            setErrorMessage(error.message); // Hiển thị lỗi trong trang
+            console.error("Error:", error);
+            showError('Đã xảy ra lỗi trong quá trình đăng nhập!');
         }
     };
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
             <div className="flex flex-col md:flex-row bg-white shadow-lg rounded-3xl p-4 max-w-4xl w-full">
-                
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light"
+                    transition={Bounce}
+                />
+
                 {/* Left Box */}
                 <div className="flex justify-center items-center bg-blue-50 rounded-2xl md:w-1/2 p-4">
                     <img
@@ -57,7 +111,7 @@ const Login = () => {
                         className="w-4/5"
                     />
                 </div>
-                
+
                 {/* Right Box */}
                 <div className="flex flex-col md:w-1/2 p-10">
                     <div className="text-center mb-2">
@@ -69,8 +123,8 @@ const Login = () => {
                         <h6 className="text-lg font-medium mt-5">Hệ thống quản lý đặt lịch khám chữa bệnh</h6>
                         <h2 className="text-2xl text-blue-900 font-bold mt-7">Đăng nhập</h2>
                     </div>
-                    
-                    <form onSubmit={handleSubmit}> {/* Thêm handleSubmit */}
+
+                    <form onSubmit={handleSubmit}>
                         <div className="mt-4">
                             <label className="block text-md mb-1" htmlFor="username">Tài khoản</label>
                             <input
@@ -79,10 +133,9 @@ const Login = () => {
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 py-2 mb-4"
-                                placeholder=""
                             />
                         </div>
-                        
+
                         <div className="mt-2">
                             <label className="block text-md mb-1" htmlFor="password">Mật khẩu</label>
                             <input
@@ -91,16 +144,9 @@ const Login = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 py-2 mb-4"
-                                placeholder=""
                             />
                         </div>
-                        
-                        {errorMessage && (
-                            <div className="text-red-500 text-sm mb-4">
-                                {errorMessage} {/* Hiển thị thông báo lỗi */}
-                            </div>
-                        )}
-                        
+
                         <div className="flex justify-between items-center mb-4">
                             <div className="flex items-center">
                                 <input
@@ -111,7 +157,7 @@ const Login = () => {
                                 <label htmlFor="remember" className="text-gray-600 text-sm">Ghi nhớ mật khẩu</label>
                             </div>
                         </div>
-                        
+
                         <button
                             type="submit"
                             className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-bold"
