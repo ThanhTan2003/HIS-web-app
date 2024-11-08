@@ -110,7 +110,7 @@ export default function ThongTinDichVu() {
                   <strong>Tên dịch vụ:</strong> {service.name}
                 </p>
                 <p className="text-lg">
-                  <strong>Chuyên khoa:</strong> {service.specialtyId ? service.specialtyId : '...'}
+                  <strong>Chuyên khoa:</strong> {service.specialtyResponse && service.specialtyResponse.specialtyName ? service.specialtyResponse.specialtyName : '...'}
                 </p>
                 <p className="text-lg">
                   <strong>Phân loại:</strong> {service.serviceType.name ? service.serviceType.name : '...'}

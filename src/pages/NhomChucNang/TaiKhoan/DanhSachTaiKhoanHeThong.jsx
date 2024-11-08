@@ -56,7 +56,6 @@ function DanhSach() {
     };
 
     const handleAddSuccess = () => {
-        // Refresh the user list after successfully adding a new account
         const accessToken = getToken();
         getUsers(accessToken); // Gọi lại API để lấy danh sách mới nhất
         closeModalAdd(); // Đóng modal

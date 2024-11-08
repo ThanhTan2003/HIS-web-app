@@ -4,7 +4,7 @@ import { faSearch, faUserPlus, faPlus, faXmark } from '@fortawesome/free-solid-s
 import { getToken } from '../../../services/localStorageService';
 import { CONFIG } from '../../../configurations/configuration';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ThemTaiKhoan = ({ isOpen, onClose, onCreateSuccess }) => {
@@ -63,17 +63,17 @@ const ThemTaiKhoan = ({ isOpen, onClose, onCreateSuccess }) => {
     });
   };
 
-  const showInfo= (info) =>{
+  const showInfo = (info) => {
     toast.info(info, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-}
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  }
 
   const handleCreateAccount = async () => {
     if (password !== confirmPassword) {
@@ -102,8 +102,20 @@ const ThemTaiKhoan = ({ isOpen, onClose, onCreateSuccess }) => {
       });
 
       if (response.ok) {
+        toast.success('Tạo tài khoản mới thành công!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
         onCreateSuccess();
         onClose();
+
       } else {
         const errorData = await response.json();
         setError(errorData.message || 'Failed to create account');

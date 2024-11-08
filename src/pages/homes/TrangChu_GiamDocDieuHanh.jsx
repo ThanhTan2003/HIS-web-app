@@ -38,7 +38,7 @@ const Sidebar = ({ selectedPage, setSelectedPage }) => {
   return (
     <div className="w-64 bg-white p-5 shadow h-screen fixed">
       <div className="logo flex justify-center items-center">
-        <img src="logo.PNG" alt="Logo" className="w-full" />
+        <img src="/logo.PNG" alt="Logo" className="w-full" />
       </div>
       <hr className="my-5" />
       <div>

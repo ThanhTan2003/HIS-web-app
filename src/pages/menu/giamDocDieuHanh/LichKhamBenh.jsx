@@ -1,19 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Routes, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Route, Routes, Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartSimple, faTableList } from '@fortawesome/free-solid-svg-icons';
+import { faChartSimple, faCalendarDays, faSliders, faBookMedical, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 
-import ThongKe from '../../NhomChucNang/LichKhamBenh/ThongKe';
-import DanhSach from '../../NhomChucNang/LichKhamBenh/DanhSach';
+import ThongKe from '../../NhomChucNang/LichKhamBenh/Menu/ThongKe';
+import LichKham from '../../NhomChucNang/LichKhamBenh/Menu/LichKham';
+import ThietLap from '../../NhomChucNang/LichKhamBenh/Menu/ThietLap';
+import HoSoDangKy from '../../NhomChucNang/LichKhamBenh/Menu/HoSoDangKy';
+import ThayTheBacSi from '../../NhomChucNang/LichKhamBenh/Menu/ThayTheBacSi';
 import ThongTinLichKhamBenh from '../../NhomChucNang/LichKhamBenh/ThongTinLichKhamBenh';
+import DichVuBacSi from '../../NhomChucNang/LichKhamBenh/ThietLap/DichVuBacSi';
+import ThongTinNgayKham from '../../NhomChucNang/LichKhamBenh/ThongTinNgayKham';
+import LichKhamBenhTheoNgay from '../../NhomChucNang/LichKhamBenh/ThietLap/DichVuBacSi/LichKhamBenhTheoNgay';
 import NotFound from '../../NotFound';
 
 // Config cho tab
 const tabConfig = [
     { id: 'ThongKe', name: 'Thống kê', icon: faChartSimple, path: 'thong-ke' },
-    { id: 'DanhSach', name: 'Danh sách', icon: faTableList, path: 'danh-sach' },
+    { id: 'HoSoDangKy', name: 'Hồ sơ đăng ký', icon: faBookMedical, path: 'ho-so-dang-ky' },
+    { id: 'LichKham', name: 'Lịch khám', icon: faCalendarDays, path: 'lich-kham' },
+    { id: 'ThietLap', name: 'Thiết lập', icon: faSliders, path: 'thiet-lap' },
+    { id: 'ThayTheBacSi', name: 'Thay thế bác sĩ', icon: faUserGroup, path: 'thay-the-bac-si' },
 ];
-
 // Component hiển thị menu tab
 function TabMenu({ selectedTab, setSelectedTab }) {
     const navigate = useNavigate();
@@ -55,18 +63,38 @@ function App() {
 
             {/* Tab menu */}
             <div className="sticky top-[48px] z-10">
-            <TabMenu selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+                <TabMenu selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
             </div>
 
             {/* Content */}
             <div className="flex-1 bg-white mt-4 p-4 rounded shadow w-full">
                 <Routes>
                     <Route index element={<ThongKe />} />
+
                     <Route path='thong-ke' element={<ThongKe />} />
-                    <Route path='danh-sach' element={<DanhSach />}>
-                        <Route path=':doctorServiceId' element={<ThongTinLichKhamBenh />} />
+
+                    <Route path='ho-so-dang-ky' element={<HoSoDangKy />} />
+
+                    <Route path='lich-kham' element={<LichKham />}>
+                        <Route index element={<Navigate to="2" replace />} />
+                        
+                        <Route path=':day' element={<ThongTinNgayKham />} >
+                        
+                        </Route>
+
                         <Route path="*" element={<NotFound />} />
                     </Route>
+
+                    <Route path='thiet-lap' element={<ThietLap />} >
+                        <Route path=':doctorId' element={<DichVuBacSi />} >
+                        <Route index element={<Navigate to="2" replace />} />
+                            <Route path=':day' element ={<LichKhamBenhTheoNgay />} />
+                        </Route>
+                        <Route path="*" element={<NotFound />} />
+                    </Route>
+
+                    <Route path='thay-the-bac-si' element={<ThayTheBacSi />} />
+
                     <Route path="*" element={<NotFound />} />
                 </Routes>
 

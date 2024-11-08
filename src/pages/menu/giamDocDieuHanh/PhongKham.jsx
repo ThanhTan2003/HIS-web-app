@@ -36,7 +36,6 @@ function TabMenu({ selectedTab, setSelectedTab }) {
 }
 
 
-
 function App() {
     const [selectedTab, setSelectedTab] = useState('ThongKe');
     const location = useLocation();
