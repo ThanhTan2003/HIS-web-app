@@ -22,7 +22,7 @@ const menuItems = [
   { id: 'DichVu', label: 'Dịch vụ', icon: faFileMedical, path: 'dich-vu' },
   { id: 'LichKhamBenh', label: 'Lịch khám bệnh', icon: faCalendarDays, path: 'lich-kham-benh' },
   { id: 'BenhNhan', label: 'Bệnh nhân', icon: faHospitalUser, path: 'benh-nhan' },
-  { id: 'HoSoBenhAn', label: 'Hồ sơ bệnh án', icon: faFolderOpen, path: 'ho-so-benh-an' },
+  // { id: 'HoSoBenhAn', label: 'Hồ sơ bệnh án', icon: faFolderOpen, path: 'ho-so-benh-an' },
   { id: 'QuanLyTaiKhoan', label: 'Quản lý tài khoản', icon: faUserGear, path: 'tai-khoan' },
 ];
 

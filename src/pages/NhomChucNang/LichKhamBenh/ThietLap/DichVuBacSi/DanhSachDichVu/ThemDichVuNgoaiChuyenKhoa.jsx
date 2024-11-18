@@ -170,7 +170,7 @@ const ThemDichVuNgoaiChuyenKhoa = ({ isOpen, onClose, onSuccess }) => {
         const DoctorServiceRequest = {
           doctorId,
           serviceId,
-          status: "Đang hoạt động",
+          is_active: true,
         };
     
         try {

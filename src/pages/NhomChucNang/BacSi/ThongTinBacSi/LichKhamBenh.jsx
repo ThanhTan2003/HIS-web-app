@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, Outlet, useNavigate, useParams, useLocation } from "react-router-dom";
-import { getToken } from '../../../../../services/localStorageService';
-import { CONFIG } from '../../../../../configurations/configuration';
+import { getToken } from "../../../../services/authenticationService";
+import { CONFIG } from '../../../../configurations/configuration';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {  } from '@fortawesome/free-solid-svg-icons';
 
@@ -39,7 +39,7 @@ function LichKhamBenh() {
                                 key={index}
                                 onClick={() => {
                                     setSelectedTab(tab.id);
-                                    navigate(`/lich-kham-benh/thiet-lap/${doctorId}/${tab.id}`);
+                                    navigate(`/bac-si/danh-sach/${doctorId}/${tab.id}`);
                                 }}
                             >
                                 {tab.name}

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link, Outlet, useNavigate, useParams, useLocation } from "react-router-dom";
-import { getToken } from '../../../../../services/localStorageService';
-import { CONFIG } from '../../../../../configurations/configuration';
+import { getToken } from "../../../../services/localStorageService";
+import { CONFIG } from '../../../../configurations/configuration';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faPen, faCalendarXmark } from '@fortawesome/free-solid-svg-icons';
-import ThemLichKhamMoi from './ThemLichKhamMoi';
-import CapNhatLichKham from './CapNhatLichKham'
+import { faInfo } from '@fortawesome/free-solid-svg-icons';
 
 const calendar = [
   { start: 7, end: 8, name: "7:00 - 8:00", session: "Sáng" },
@@ -23,31 +21,6 @@ export default function LichKhamBenhTheoNgay() {
   const { doctorId, day } = useParams();
 
   const [timeFrames, setTimeFrames] = useState([]);
-  const [showModalAdd, setShowModalAdd] = useState(false);
-  const [selectedSlot, setSelectedSlot] = useState(null);
-
-  const [showModalUpdate, setShowModalUpdate] = useState(false);
-  const [serviceTimeFrameId, setServiceTimeFrameId] = useState(null)
-
-  const openModalAdd = (timeSlot) => {
-    setSelectedSlot(timeSlot);
-    setShowModalAdd(true);
-  };
-
-  const closeModalAdd = () => {
-    setShowModalAdd(false);
-    setSelectedSlot(null);
-  };
-
-  const openModalUpdate = (id) => {
-    setServiceTimeFrameId(id);
-    setShowModalUpdate(true);
-  };
-
-  const closeModalUpdate = () => {
-    setShowModalUpdate(false);
-    setServiceTimeFrameId(null);
-  };
 
   // Hàm lấy danh sách ServiceTimeFrame từ API
   const getServiceTimeFrames = async (accessToken) => {
@@ -82,7 +55,7 @@ export default function LichKhamBenhTheoNgay() {
     } else {
       getServiceTimeFrames(accessToken);
     }
-  }, [navigate, doctorId, day, showModalAdd, showModalUpdate]);
+  }, [navigate, doctorId, day]);
 
   const renderTimeSlots = (sessionName) => {
     const filteredSlots = calendar.filter((slot) => slot.session === sessionName);
@@ -114,23 +87,14 @@ export default function LichKhamBenhTheoNgay() {
                 {frame.startNumber} - {frame.endNumber}
               </td>
               <td className="border border-gray-300 p-2 text-zinc-700">
-                <select className="border border-blue-300 rounded p-1">
-                  <option value="Nhận đăng ký">Nhận đăng ký</option>
-                  <option value="Ngừng nhận đăng ký">Ngừng đăng ký</option>
-                </select>
+                Nhận đăng ký
               </td>
-              <td className="border border-gray-300 p-2 text-zinc-700 text-center font-semibold" style={{ width: "150px" }}>
-                <div className="flex items-center space-x-2 justify-center">
-                  <button 
-                    onClick={() => openModalUpdate(frame.id)}
-                    className="bg-white text-teal-600 px-3 py-1 rounded-md hover:text-white hover:bg-teal-600 transition duration-75 flex items-center justify-center w-20 border border-teal-600"
-                  >
-                    Sửa &nbsp;<FontAwesomeIcon icon={faPen} className="mr-1" />
-                  </button>
-                  <button className="bg-white text-red-500 px-3 py-1 rounded-md hover:bg-red-500 hover:text-white transition duration-75 border border-red-500">
-                    Xóa &nbsp;<FontAwesomeIcon icon={faCalendarXmark} className="mr-1" />
-                  </button>
-                </div>
+              <td className="border border-gray-200 p-2 text-center whitespace-nowrap">
+                <button
+                  className="bg-white text-sky-600 px-3 py-1 rounded-md hover:bg-sky-600 hover:text-white transition duration-75 w-10/12 font-semibold border border-sky-600"
+                >
+                  Chi tiết &nbsp;<FontAwesomeIcon icon={faInfo} className="mr-1" />
+                </button>
               </td>
             </>
           ) : (
@@ -140,13 +104,8 @@ export default function LichKhamBenhTheoNgay() {
               <td className="border border-gray-300 p-2 text-zinc-700"></td>
               <td className="border border-gray-300 p-2 text-zinc-700"></td>
               <td className="border border-gray-300 p-2 text-zinc-700"></td>
-              <td className="border border-gray-300 p-2 text-zinc-700 text-center justify-center items-center" style={{ width: "220px" }}>
-                <button
-                  onClick={() => openModalAdd(timeSlot)}
-                  className="bg-white text-sky-600 px-3 py-1 rounded-md hover:bg-sky-600 hover:text-white transition duration-75 w-10/12 font-semibold border border-sky-600"
-                >
-                  Thêm mới &nbsp;<FontAwesomeIcon icon={faPlus} className="mr-1" />
-                </button>
+              <td className="border border-gray-200 p-2 text-center whitespace-nowrap">
+
               </td>
             </>
           )}
@@ -184,22 +143,6 @@ export default function LichKhamBenhTheoNgay() {
             {renderTimeSlots("Chiều")}
           </tbody>
         </table>
-        {showModalAdd && selectedSlot && (
-          <ThemLichKhamMoi
-            isOpen={showModalAdd}
-            onClose={closeModalAdd}
-            doctorId={doctorId}
-            start={selectedSlot.start}
-            end={selectedSlot.end}
-          />
-        )}
-        {showModalUpdate && serviceTimeFrameId && (
-          <CapNhatLichKham
-            isOpen={showModalUpdate}
-            onClose={closeModalUpdate}
-            serviceTimeFrameId ={serviceTimeFrameId}
-          />
-        )}
         <br></br>
       </div>
 

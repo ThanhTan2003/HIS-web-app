@@ -5,6 +5,9 @@ import { CONFIG } from '../../../configurations/configuration';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAnglesLeft } from '@fortawesome/free-solid-svg-icons';
 
+import DanhSachDichVu from './ThongTinBacSi/DanhSachDichVu'
+import LichKhamBenh from './ThongTinBacSi/LichKhamBenh';
+
 function ThongTinBacSi() {
     const navigate = useNavigate();
     const { doctorId } = useParams();
@@ -47,7 +50,7 @@ function ThongTinBacSi() {
             navigate('/login');
         } else {
             getDoctorDetails(accessToken);
-            window.scrollTo(0, 0);
+            //window.scrollTo(0, 0);
         }
     }, [navigate, doctorId]);
 
@@ -156,30 +159,13 @@ function ThongTinBacSi() {
                     <hr />
                     <br />
 
-                    {/* Danh sách dịch vụ */}
-                    <h1 className="text-2xl font-bold mb-4 text-blue-900">
-                        Danh sách dịch vụ khám chữa bệnh
-                    </h1>
-                    <div className="overflow-x-auto">
-                        <table className="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
-                            <thead>
-                                <tr className="bg-sky-600 text-white">
-                                    <th className="border border-gray-200 p-3 text-center">STT</th>
-                                    <th className="border border-gray-200 p-3 text-left">Mã DV</th>
-                                    <th className="border border-gray-200 p-3 text-left">Tên dịch vụ</th>
-                                    <th className="border border-gray-200 p-3 text-left">Chuyên khoa</th>
-                                    <th className="border border-gray-200 p-3 text-left">Phân loại</th>
-                                    <th className="border border-gray-200 p-3 text-left">Tình trạng</th>
-                                    <th className="border border-gray-200 p-3 text-center"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colSpan="7" className="text-center p-4">Không có dữ liệu</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <DanhSachDichVu />
+
+                    <br />
+                    <hr />
+                    <br />
+
+                    <LichKhamBenh />
                 </>
             ) : (
                 <div className="text-center text-xl text-gray-500">

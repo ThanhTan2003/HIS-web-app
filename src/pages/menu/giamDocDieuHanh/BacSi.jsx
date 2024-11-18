@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Routes, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Route, Routes, Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartSimple, faUsers, faDna, faUserDoctor } from '@fortawesome/free-solid-svg-icons';
 
@@ -10,6 +10,7 @@ import NghiPhep from '../../NhomChucNang/BacSi/NghiPhep';
 import NotFound from '../../NotFound';
 import ThongTinBacSi from '../../NhomChucNang/BacSi/ThongTinBacSi';
 import ThongTinChuyenKhoa from '../../NhomChucNang/BacSi/ThongTinChuyenKhoa';
+import LichKhamBenhTheoNgay from '../../NhomChucNang/BacSi/ThongTinBacSi/LichKhamBenhTheoNgay';
 
 // Config cho tab
 const tabConfig = [
@@ -44,6 +45,7 @@ function TabMenu({ selectedTab, setSelectedTab }) {
 function BacSi() {
   const [selectedTab, setSelectedTab] = useState('ThongKe');
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Cập nhật selectedTab khi URL thay đổi
   useEffect(() => {
@@ -64,7 +66,7 @@ function BacSi() {
       <div className="sticky top-[48px] z-10">
         <TabMenu selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
       </div>
-      
+
 
       {/* Content */}
       <div className="flex-1 bg-white mt-4 p-4 rounded shadow w-full">
@@ -72,7 +74,10 @@ function BacSi() {
           <Route index element={<ThongKe />} />
           <Route path='thong-ke' element={<ThongKe />} />
           <Route path='danh-sach' element={<DanhSach />}>
-            <Route path=':doctorId' element={<ThongTinBacSi />} />
+            <Route path=':doctorId' element={<ThongTinBacSi />}>
+              <Route index element={<Navigate to="2" replace />} />
+              <Route path=':day' element={<LichKhamBenhTheoNgay />} />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Route>
           <Route path='chuyen-khoa' element={<ChuyenKhoa />}>

@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Link, Outlet, useNavigate, useParams, useLocation } from "react-router-dom";
-import { getToken } from '../../../../../services/localStorageService';
-import { CONFIG } from '../../../../../configurations/configuration';
+import { getToken } from "../../../../services/localStorageService";
+import { CONFIG } from '../../../../configurations/configuration';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagnifyingGlass, faStethoscope, faVialVirus, faBan } from '@fortawesome/free-solid-svg-icons';
+import { faInfo, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-import ThemDichVuThuocChuyenKhoa from './DanhSachDichVu/ThemDichVuThuocChuyeKhoa'
-import ThemDichVuNgoaiChuyenKhoa from './DanhSachDichVu/ThemDichVuNgoaiChuyenKhoa'
 
 
 function DanhSachDichVu() {
@@ -26,39 +23,6 @@ function DanhSachDichVu() {
     const [key, setKey] = useState(0);
 
     const { doctorId } = useParams();
-
-    const [showModalThemDVThuocChuyenKhoa, setShowModalThemDVThuocChuyenKhoa] = useState(false);
-    const [showModalThemDVNgoaiChuyenKhoa, setShowModalThemDVNgoaiChuyenKhoa] = useState(false);
-
-
-    const openModalThemDVThuocChuyenKhoa = () => {
-        setShowModalThemDVThuocChuyenKhoa(true);
-    };
-
-    const closeModalThemDVThuocChuyenKhoa = () => {
-        setShowModalThemDVThuocChuyenKhoa(false);
-    };
-
-    const openModalThemDVNgoaiChuyenKhoa = () => {
-        setShowModalThemDVNgoaiChuyenKhoa(true);
-    };
-
-    const closeModalThemDVNgoaiChuyenKhoa = () => {
-        setShowModalThemDVNgoaiChuyenKhoa(false);
-    };
-
-    const showSuccess = async (success) => {
-        console.log(success)
-        toast.success(success, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
-    };
 
     // Hàm để tạo số trang hiển thị
     const getPageNumbers = () => {
@@ -126,7 +90,7 @@ function DanhSachDichVu() {
             getDoctorServices(accessToken);
             //window.scrollTo(0, 0);
         }
-    }, [navigate, currentPage, pageSize, keyword, showModalThemDVThuocChuyenKhoa, showModalThemDVNgoaiChuyenKhoa]);
+    }, [navigate, currentPage, pageSize, keyword]);
 
 
     // Hàm chuyển đổi chuỗi tiếng Việt thành chuỗi không dấu
@@ -136,39 +100,20 @@ function DanhSachDichVu() {
 
     return (
         <div className='border border-blue-600 rounded-lg shadow-md relative p-4'>
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
             <h1 className="absolute -top-4 left-4 bg-white px-2 text-blue-900 font-bold text-2xl">
                 DANH SÁCH DỊCH VỤ
             </h1>
             <div className="flex justify-between items-center mb-2 pt-4">
                 {/* Nút bên trái */}
-                <div className="flex items-center space-x-2 font-semibold">
-                    <button
-                        type="button"
-                        onClick={openModalThemDVThuocChuyenKhoa} // Hàm xử lý khi bấm vào "Thêm dịch vụ thuộc chuyên khoa"
-                        className="bg-sky-700 text-white py-2 px-4 rounded hover:bg-sky-800"
-                    >
-                        Thêm dịch vụ thuộc chuyên khoa &nbsp; <FontAwesomeIcon icon={faStethoscope} />
-                    </button>
-
-                    <button
-                        type="button"
-                        onClick={openModalThemDVNgoaiChuyenKhoa} // Hàm xử lý khi bấm vào "Thêm dịch vụ ngoài chuyên khoa"
-                        className="bg-sky-700 text-white py-2 px-4 rounded hover:bg-sky-800"
-                    >
-                        Thêm dịch vụ ngoài chuyên khoa &nbsp; <FontAwesomeIcon icon={faVialVirus} />
-                    </button>
+                <div className="flex items-center space-x-2">
+                <select 
+                            className="border p-2 rounded border-blue-300" 
+                        >
+                            <option value="">Tất cả</option>
+                            <option value="DangHoatDong">Đang hoạt động </option>
+                            <option value="NgungHoatDong">Ngừng Hoạt động&nbsp;&nbsp;</option>
+                            
+                        </select>
                 </div>
 
                 {/* Ô tìm kiếm và nút tìm kiếm ở bên phải */}
@@ -196,9 +141,6 @@ function DanhSachDichVu() {
                 </div>
             </div>
 
-
-            <br />
-
             {/* Bảng danh sách */}
             <div className="overflow-x-auto">
                 <table className="w-full border-collapse border border-gray-200 shadow-lg rounded-md">
@@ -208,6 +150,7 @@ function DanhSachDichVu() {
                             <th className="border border-gray-200 p-3 text-left">Tên dịch vụ</th>
                             <th className="border border-gray-200 p-3 text-left">Chuyên khoa</th>
                             <th className="border border-gray-200 p-3 text-left">Phân loại</th>
+                            <th className="border border-gray-200 p-3 text-left">Tình trạng</th>
                             {/* <th className="border border-gray-200 p-3 text-left">Tình trạng</th> */}
                             <th className="border border-gray-200 p-3 text-center"></th>
                         </tr>
@@ -228,25 +171,14 @@ function DanhSachDichVu() {
                                     <td className="border border-gray-200 p-2 text-zinc-700">
                                         {doctorService.service?.serviceType?.name || '...'}
                                     </td>
-                                    {/* <td className="border border-gray-200 p-2 text-zinc-700">
-                                        <select
-                                            value={doctorService.status}
-                                            onChange={(e) => {
-                                                const updatedStatus = e.target.value;
-                                                // Hàm xử lý thay đổi trạng thái
-                                                handleStatusChange(doctorService.id, updatedStatus);
-                                            }}
-                                            className="border border-blue-300 rounded p-2 w-full"
-                                        >
-                                            <option value="Đang hoạt động">Đang hoạt động</option>
-                                            <option value="Ngừng hoạt động">Ngừng hoạt động</option>
-                                        </select>
-                                    </td> */}
-                                    <td className="border border-gray-200 p-2 text-center">
+                                    <td className="border border-gray-200 p-2 text-zinc-700">
+                                        Đang hoạt động
+                                    </td>
+                                    <td className="border border-gray-200 p-2 text-center whitespace-nowrap">
                                         <button
-                                            className="bg-white text-red-500 px-3 py-1 rounded-md hover:bg-red-500 hover:text-white transition duration-75 border border-red-500"
+                                            className="bg-white text-sky-600 px-3 py-1 rounded-md hover:bg-sky-600 hover:text-white transition duration-75 w-10/12 font-semibold border border-sky-600"
                                         >
-                                            Xóa &nbsp;<FontAwesomeIcon icon={faBan} />
+                                            Chi tiết &nbsp;<FontAwesomeIcon icon={faInfo} className="mr-1" />
                                         </button>
                                     </td>
 
@@ -290,21 +222,6 @@ function DanhSachDichVu() {
                     )
                 )}
             </div>
-
-            {showModalThemDVThuocChuyenKhoa &&
-                <ThemDichVuThuocChuyenKhoa
-                    isOpen={showModalThemDVThuocChuyenKhoa}
-                    onClose={closeModalThemDVThuocChuyenKhoa}
-                    onSuccess={showSuccess}
-                />
-            }
-            {showModalThemDVNgoaiChuyenKhoa &&
-                <ThemDichVuNgoaiChuyenKhoa
-                    isOpen={showModalThemDVNgoaiChuyenKhoa}
-                    onClose={closeModalThemDVNgoaiChuyenKhoa}
-                    onSuccess={showSuccess}
-                />
-            }
         </div>
     );
 }

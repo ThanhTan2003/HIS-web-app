@@ -77,9 +77,9 @@ function App() {
 
                     <Route path='lich-kham' element={<LichKham />}>
                         <Route index element={<Navigate to="2" replace />} />
-                        
+
                         <Route path=':day' element={<ThongTinNgayKham />} >
-                        
+
                         </Route>
 
                         <Route path="*" element={<NotFound />} />
@@ -87,8 +87,8 @@ function App() {
 
                     <Route path='thiet-lap' element={<ThietLap />} >
                         <Route path=':doctorId' element={<DichVuBacSi />} >
-                        <Route index element={<Navigate to="2" replace />} />
-                            <Route path=':day' element ={<LichKhamBenhTheoNgay />} />
+                            <Route index element={<Navigate to="2" replace />} />
+                            <Route path=':day' element={<LichKhamBenhTheoNgay />} />
                         </Route>
                         <Route path="*" element={<NotFound />} />
                     </Route>

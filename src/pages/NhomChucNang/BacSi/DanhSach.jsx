@@ -97,7 +97,7 @@ function DanhSach() {
         } else {
             getUserDetails(accessToken);
             getSpecialties(accessToken);
-            window.scrollTo(0, 0);
+            //window.scrollTo(0, 0);
         }
     }, [navigate, currentPage, pageSize, selectedSpecialty, selectedStatus]);
 

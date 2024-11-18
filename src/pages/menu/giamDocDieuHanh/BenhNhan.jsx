@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Routes, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartSimple, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faChartSimple, faUsers, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 
 import ThongKe from '../../NhomChucNang/BenhNhan/ThongKe';
 import DanhSach from '../../NhomChucNang/BenhNhan/DanhSach';
@@ -11,7 +11,8 @@ import NotFound from '../../NotFound';
 // Config cho tab
 const tabConfig = [
     { id: 'ThongKe', name: 'Thống kê', icon: faChartSimple, path: 'thong-ke' },
-    { id: 'DanhSach', name: 'Danh sách', icon: faUsers, path: 'danh-sach' },
+    { id: 'DanhSach', name: 'Hồ sơ bệnh nhân', icon: faUsers, path: 'danh-sach' },
+    { id: 'HoSoBenhAn', name: 'Hồ sơ bệnh án', icon: faFolderOpen, path: 'ho-so-benh-an' },
 ];
 
 // Component hiển thị menu tab

@@ -260,6 +260,7 @@ function DanhSach() {
                                     <th className="border border-gray-200 p-3 text-left">Tên người dùng</th>
                                     <th className="border border-gray-200 p-3 text-left">Loại tài khoản</th>
                                     <th className="border border-gray-200 p-3 text-left">Tình trạng</th>
+                                    <th className="border border-gray-200 p-3 text-left">Hoạt động</th>
                                     <th className="border border-gray-200 p-3 text-center"></th>
                                 </tr>
                             </thead>
@@ -278,6 +279,8 @@ function DanhSach() {
                                                         removeVietnameseTones(user.status) === 'Dang bao tri' ? 'text-orange-800' : ''}`}>
                                                 {user.status}
                                             </td>
+
+                                            <td className="border border-gray-200 p-2">{user.lastAccessTime}</td>
 
                                             <td className="border border-gray-200 p-2 text-center">
                                                 <Link to={`${user.userName}`}>
