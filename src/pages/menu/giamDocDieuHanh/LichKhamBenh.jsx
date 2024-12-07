@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Routes, Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartSimple, faCalendarDays, faSliders, faBookMedical, faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import { faChartSimple, faCalendarDays, faSliders, faBookMedical, faUserGroup, faSun } from '@fortawesome/free-solid-svg-icons';
 
 import ThongKe from '../../NhomChucNang/LichKhamBenh/Menu/ThongKe';
 import LichKham from '../../NhomChucNang/LichKhamBenh/Menu/LichKham';
@@ -13,6 +13,8 @@ import DichVuBacSi from '../../NhomChucNang/LichKhamBenh/ThietLap/DichVuBacSi';
 import ThongTinNgayKham from '../../NhomChucNang/LichKhamBenh/ThongTinNgayKham';
 import LichKhamBenhTheoNgay from '../../NhomChucNang/LichKhamBenh/ThietLap/DichVuBacSi/LichKhamBenhTheoNgay';
 import NotFound from '../../NotFound';
+import XacNhanLichKham from '../../NhomChucNang/LichKhamBenh/HoSoDangKy/XacNhanLichKham';
+import ChiTietLichKham from '../../NhomChucNang/LichKhamBenh/HoSoDangKy/ChiTietLichKham';
 
 // Config cho tab
 const tabConfig = [
@@ -21,6 +23,7 @@ const tabConfig = [
     { id: 'LichKham', name: 'Lịch khám', icon: faCalendarDays, path: 'lich-kham' },
     { id: 'ThietLap', name: 'Thiết lập', icon: faSliders, path: 'thiet-lap' },
     { id: 'ThayTheBacSi', name: 'Thay thế bác sĩ', icon: faUserGroup, path: 'thay-the-bac-si' },
+    { id: 'NgayNghi', name: 'Ngày nghỉ', icon: faSun, path: 'ngay-nghi' },
 ];
 // Component hiển thị menu tab
 function TabMenu({ selectedTab, setSelectedTab }) {
@@ -73,7 +76,11 @@ function App() {
 
                     <Route path='thong-ke' element={<ThongKe />} />
 
-                    <Route path='ho-so-dang-ky' element={<HoSoDangKy />} />
+                    <Route path="ho-so-dang-ky" element={<HoSoDangKy />}>
+                        <Route path="xac-nhan/:appointmentId" element={<XacNhanLichKham />} />
+                        <Route path="chi-tiet/:appointmentId" element={<ChiTietLichKham />} />
+                        <Route path="*" element={<NotFound />} />
+                    </Route>
 
                     <Route path='lich-kham' element={<LichKham />}>
                         <Route index element={<Navigate to="2" replace />} />

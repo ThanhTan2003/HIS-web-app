@@ -3,7 +3,7 @@ import { Link, Outlet, useNavigate, useParams, useLocation } from "react-router-
 import { getToken } from '../../../../../services/localStorageService';
 import { CONFIG } from '../../../../../configurations/configuration';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagnifyingGlass, faStethoscope, faVialVirus, faBan } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faStethoscope, faVialVirus, faBan, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -26,6 +26,8 @@ function DanhSachDichVu() {
     const [key, setKey] = useState(0);
 
     const { doctorId } = useParams();
+
+    const [unitPrices, setUnitPrices] = useState({}); // Lưu giá trị input cho từng doctorService
 
     const [showModalThemDVThuocChuyenKhoa, setShowModalThemDVThuocChuyenKhoa] = useState(false);
     const [showModalThemDVNgoaiChuyenKhoa, setShowModalThemDVNgoaiChuyenKhoa] = useState(false);
@@ -118,6 +120,73 @@ function DanhSachDichVu() {
         }
     };
 
+    // Hàm gọi API PUT để cập nhật giá trị unitPrice
+    const updateUnitPrice = async (id, newUnitPrice) => {
+        const accessToken = getToken();
+        if (!accessToken) {
+            navigate("/login");
+            return;
+        }
+
+        try {
+            // Chuyển newUnitPrice thành kiểu số thập phân chính xác (Double)
+            const doubleUnitPrice = parseFloat(newUnitPrice).toFixed(2); // Giới hạn số thập phân là 2 chữ số
+            console.log(doubleUnitPrice);
+
+            const response = await fetch(`${CONFIG.API_GATEWAY}/medical/doctor-service/update/${id}`, {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ unitPrice: doubleUnitPrice }) // Gửi giá trị unitPrice là Double
+            });
+
+            console.log(id + " - " + doubleUnitPrice)
+
+            if (response.ok) {
+                showSuccess('Cập nhật giá thành công');
+                // Sau khi cập nhật, bạn cần lấy lại danh sách dịch vụ mới
+                getDoctorServices(accessToken);
+            } else {
+                toast.error("Lỗi khi cập nhật giá dịch vụ");
+            }
+        } catch (error) {
+            console.error("Error updating unit price:", error);
+            toast.error("Có lỗi xảy ra trong quá trình cập nhật");
+        }
+    };
+
+    const handleInputChange = (e, doctorServiceId) => {
+        const value = e.target.value;
+        // Cập nhật state unitPrices ngay khi giá trị thay đổi
+        setUnitPrices(prevState => ({
+            ...prevState,
+            [doctorServiceId]: value
+        }));
+    };
+
+    // Hàm xử lý khi thay đổi giá trị unitPrice
+    const handleUnitPriceChange = async (doctorServiceId, newUnitPrice) => {
+        // Kiểm tra giá trị mới có hợp lệ không
+        if (isNaN(newUnitPrice) || newUnitPrice < 1000) {
+            toast.error("Giá trị không hợp lệ");
+            return;
+        }
+
+        // Cập nhật API với id và giá trị mới
+        await updateUnitPrice(doctorServiceId, newUnitPrice);
+
+        // Nếu cần, cập nhật lại state doctorServices nếu có thay đổi
+        const updatedDoctorServices = doctorServices.map(service =>
+            service.id === doctorServiceId
+                ? { ...service, unitPrice: newUnitPrice }
+                : service
+        );
+        console.log(newUnitPrice)
+        setDoctorServices(updatedDoctorServices);
+    };
+
     useEffect(() => {
         const accessToken = getToken();
         if (!accessToken) {
@@ -208,6 +277,7 @@ function DanhSachDichVu() {
                             <th className="border border-gray-200 p-3 text-left">Tên dịch vụ</th>
                             <th className="border border-gray-200 p-3 text-left">Chuyên khoa</th>
                             <th className="border border-gray-200 p-3 text-left">Phân loại</th>
+                            <th className="border border-gray-200 p-3 text-left">Phí dịch vụ</th>
                             {/* <th className="border border-gray-200 p-3 text-left">Tình trạng</th> */}
                             <th className="border border-gray-200 p-3 text-center"></th>
                         </tr>
@@ -228,20 +298,28 @@ function DanhSachDichVu() {
                                     <td className="border border-gray-200 p-2 text-zinc-700">
                                         {doctorService.service?.serviceType?.name || '...'}
                                     </td>
-                                    {/* <td className="border border-gray-200 p-2 text-zinc-700">
-                                        <select
-                                            value={doctorService.status}
-                                            onChange={(e) => {
-                                                const updatedStatus = e.target.value;
-                                                // Hàm xử lý thay đổi trạng thái
-                                                handleStatusChange(doctorService.id, updatedStatus);
-                                            }}
-                                            className="border border-blue-300 rounded p-2 w-full"
-                                        >
-                                            <option value="Đang hoạt động">Đang hoạt động</option>
-                                            <option value="Ngừng hoạt động">Ngừng hoạt động</option>
-                                        </select>
-                                    </td> */}
+                                    <td className="border border-gray-200 p-2 text-zinc-700 text-center w-40">
+                                        <div className="flex items-center space-x-2 justify-center">
+                                            {/* Input giá trị dịch vụ */}
+                                            <input
+                                                type="number"
+                                                value={unitPrices[doctorService.id] || doctorService.unitPrice} // Sử dụng giá trị từ state hoặc giá trị ban đầu
+                                                onChange={(e) => handleInputChange(e, doctorService.id)} // Cập nhật state khi người dùng nhập giá trị
+                                                className="w-28 border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
+                                            />
+
+                                            {/* Nút cập nhật */}
+                                            <button
+                                                className="bg-sky-600 text-white py-2 px-4 rounded font-bold hover:bg-sky-700"
+                                                title="Cập nhật mức giá mới"
+                                                onClick={() => handleUnitPriceChange(doctorService.id, parseFloat(unitPrices[doctorService.id]))} // Truyền id và giá trị mới khi nhấn nút
+                                            >
+                                                <FontAwesomeIcon icon={faPenToSquare} />
+                                            </button>
+                                        </div>
+                                    </td>
+
+
                                     <td className="border border-gray-200 p-2 text-center">
                                         <button
                                             className="bg-white text-red-500 px-3 py-1 rounded-md hover:bg-red-500 hover:text-white transition duration-75 border border-red-500"

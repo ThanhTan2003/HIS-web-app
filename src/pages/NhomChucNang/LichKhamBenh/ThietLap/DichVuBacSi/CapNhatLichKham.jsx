@@ -44,7 +44,7 @@ const showWarning = (message) => {
     });
 };
 
-const ChonPhongKham = ({ roomId, setRoomId, dayOfWeek, startTime, endTime }) => {
+const ChonPhongKham = ({ roomId, setRoomId, dayOfWeek, timeFrameId }) => {
     const navigate = useNavigate();
 
     const [functions, setFunctions] = useState([]);
@@ -141,7 +141,7 @@ const ChonPhongKham = ({ roomId, setRoomId, dayOfWeek, startTime, endTime }) => 
         try {
             getOriginalRoom(accessToken);
             const response = await fetch(
-                `${CONFIG.API_GATEWAY}/medical/room/get-rooms-and-update?roomId=${roomId}&dayOfWeek=${dayOfWeek}&startTime=${startTime}&endTime=${endTime}&function=${selectedFunction}&keyword=${keyword}&page=${currentPage}&size=${pageSize}`,
+                `${CONFIG.API_GATEWAY}/medical/room/get-rooms-and-update?roomId=${roomId}&dayOfWeek=${dayOfWeek}&timeFrameId=${timeFrameId}&function=${selectedFunction}&keyword=${keyword}&page=${currentPage}&size=${pageSize}`,
                 {
                     method: "GET",
                     headers: {
@@ -181,7 +181,7 @@ const ChonPhongKham = ({ roomId, setRoomId, dayOfWeek, startTime, endTime }) => 
         } else {
             getRooms(accessToken); // Gọi hàm getRooms mỗi khi có sự thay đổi
         }
-    }, [navigate, roomId, dayOfWeek, startTime, endTime, selectedFunction, keyword, currentPage, pageSize]); 
+    }, [navigate, roomId, dayOfWeek, timeFrameId, selectedFunction, keyword, currentPage, pageSize]); 
 
     const handleSelectFunction = (value) => {
         setSelectedFunction(value);
@@ -423,8 +423,7 @@ const CapNhatLichKham = ({ isOpen, onClose, serviceTimeFrameId }) => {
     const [quantity, setQuantity] = useState(0);
     const [startNumber, setStartNumber] = useState(0);
     const [endNumber, setEndNumber] = useState(0);
-    const [startTime, setStartTime] = useState(0);
-    const [endTime, setEndTime] = useState(0);
+    const [timeFrameId, setTimeFrameId] = useState(0);
 
     const { day } = useParams();
 
@@ -439,8 +438,6 @@ const CapNhatLichKham = ({ isOpen, onClose, serviceTimeFrameId }) => {
         }
 
         const ServiceTimeFrameUpdate = {
-            startTime: startTime,
-            endTime: endTime,
             maximumQuantity: quantity,
             startNumber: startNumber,
             endNumber: endNumber,
@@ -493,8 +490,7 @@ const CapNhatLichKham = ({ isOpen, onClose, serviceTimeFrameId }) => {
             setRoomId(data.roomId)
             setStartNumber(data.startNumber)
             setEndNumber(data.endNumber)
-            setStartTime(data.startTime)
-            setEndTime(data.endTime)
+            setTimeFrameId(data.timeFrameResponse.id)
         } catch (error) {
             console.error("Error fetching data:", error);
         }
@@ -558,7 +554,7 @@ const CapNhatLichKham = ({ isOpen, onClose, serviceTimeFrameId }) => {
                 </div>
 
                 <div className='p-8'>
-                    <ChonPhongKham roomId={roomId} setRoomId={setRoomId} dayOfWeek={day} startTime={startTime} endTime={endTime} />
+                    <ChonPhongKham roomId={roomId} setRoomId={setRoomId} dayOfWeek={day} timeFrameId={timeFrameId} />
                     <br /><hr /><br />
                     <ThongTinLichKham quantity ={quantity} setQuantity={setQuantity} startNumber={startNumber} setStartNumber={setStartNumber} endNumber={endNumber} setEndNumber={setEndNumber} />
                     <div className="justify-end grid grid-cols-[40%,25%] gap-x-4 font-semibold pt-6">

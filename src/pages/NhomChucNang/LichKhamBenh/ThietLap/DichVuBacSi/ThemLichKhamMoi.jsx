@@ -246,7 +246,7 @@ const ChonDichVu = ({ setDoctorServiceId }) => {
     );
 };
 
-const ChonPhongKham = ({ romId, setRoomId, dayOfWeek, startTime, endTime }) => {
+const ChonPhongKham = ({ romId, setRoomId, dayOfWeek, timeFrameId }) => {
     const navigate = useNavigate();
 
     const [functions, setFunctions] = useState([]);
@@ -318,7 +318,7 @@ const ChonPhongKham = ({ romId, setRoomId, dayOfWeek, startTime, endTime }) => {
     const getRooms = async (accessToken) => {
         try {
             const response = await fetch(
-                `${CONFIG.API_GATEWAY}/medical/room/get-list-of-available-rooms?dayOfWeek=${dayOfWeek}&startTime=${startTime}&endTime=${endTime}&function=${selectedFunction}&keyword=${keyword}&page=${currentPage}&size=${pageSize}`,
+                `${CONFIG.API_GATEWAY}/medical/room/get-list-of-available-rooms?dayOfWeek=${dayOfWeek}&timeFrameId=${timeFrameId}&function=${selectedFunction}&keyword=${keyword}&page=${currentPage}&size=${pageSize}`,
                 {
                     method: "GET",
                     headers: {
@@ -586,7 +586,7 @@ const ThongTinLichKham = ({ setQuantity, setStartNumber, setEndNumber }) => {
 };
 
 
-const ThemLichKhamMoi = ({ isOpen, onClose, doctorId, start, end }) => {
+const ThemLichKhamMoi = ({ isOpen, onClose, doctorId, timeFrameId }) => {
     const [doctorServiceId, setDoctorServiceId] = useState('');
     const [roomId, setRoomId] = useState('');
     const [quantity, setQuantity] = useState(0);
@@ -598,14 +598,6 @@ const ThemLichKhamMoi = ({ isOpen, onClose, doctorId, start, end }) => {
     const validateInputs = () => {
         if (!day) {
             showError("Vui lòng chọn ngày.");
-            return false;
-        }
-        if (!start) {
-            showError("Vui lòng nhập giờ bắt đầu.");
-            return false;
-        }
-        if (!end) {
-            showError("Vui lòng nhập giờ kết thúc.");
             return false;
         }
         if (!quantity || quantity <= 0) {
@@ -643,14 +635,13 @@ const ThemLichKhamMoi = ({ isOpen, onClose, doctorId, start, end }) => {
 
         const ServiceTimeFrameRequest = {
             dayOfWeek: day,
-            startTime: start,
-            endTime: end,
             maximumQuantity: quantity,
             startNumber: startNumber,
             endNumber: endNumber,
             doctorServiceId: doctorServiceId,
             roomId: roomId,
-            isActive: true
+            isActive: true,
+            timeFrameId: timeFrameId
         };
 
         try {
@@ -696,7 +687,7 @@ const ThemLichKhamMoi = ({ isOpen, onClose, doctorId, start, end }) => {
                 <div className='p-8'>
                     <ChonDichVu setDoctorServiceId={setDoctorServiceId} />
                     <br /><hr /><br />
-                    <ChonPhongKham romId={roomId} setRoomId={setRoomId} dayOfWeek={day} startTime={start} endTime={end} />
+                    <ChonPhongKham romId={roomId} setRoomId={setRoomId} dayOfWeek={day} timeFrameId ={timeFrameId}/>
                     <br /><hr /><br />
                     <ThongTinLichKham setQuantity={setQuantity} setStartNumber={setStartNumber} setEndNumber={setEndNumber} />
                     <div className="justify-end grid grid-cols-[40%,25%] gap-x-4 font-semibold pt-6">
