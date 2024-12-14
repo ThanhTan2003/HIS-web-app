@@ -22,8 +22,6 @@ const menuItems = [
   { id: 'DichVu', label: 'Dịch vụ', icon: faFileMedical, path: 'dich-vu' },
   { id: 'LichKhamBenh', label: 'Lịch khám bệnh', icon: faCalendarDays, path: 'lich-kham-benh' },
   { id: 'BenhNhan', label: 'Bệnh nhân', icon: faHospitalUser, path: 'benh-nhan' },
-  // { id: 'HoSoBenhAn', label: 'Hồ sơ bệnh án', icon: faFolderOpen, path: 'ho-so-benh-an' },
-  { id: 'QuanLyTaiKhoan', label: 'Quản lý tài khoản', icon: faUserGear, path: 'tai-khoan' },
 ];
 
 // Sidebar Component
@@ -82,10 +80,10 @@ const MainContent = () => {
         <Route path="/bac-si/*" element={<BacSi />} />
         <Route path="/phong-kham/*" element={<PhongKham />} />
         <Route path="/dich-vu/*" element={<DichVu />} />
-        <Route path="/lich-kham-benh/*" element={<LichKhamBenh />} />
+        <Route path="/lich-kham-benh/*" element={<LichKhamBenh />}>
+        </Route>
         <Route path="/benh-nhan/*" element={<BenhNhan />} />
         <Route path="/ho-so-benh-an/*" element={<HoSoBenhAn />} />
-        <Route path="/tai-khoan/*" element={<QuanLyTaiKhoan />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
 
