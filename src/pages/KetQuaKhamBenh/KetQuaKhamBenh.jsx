@@ -107,67 +107,65 @@ function DanhSach() {
         <>
           <br></br>
           <div className="flex justify-between items-center mb-2">
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={syncAppointments}
-                className="bg-sky-600 text-white py-2 px-4 rounded font-bold hover:bg-sky-700"
-                title='Đồng bộ dữ liệu với hệ thống quản lý lịch hẹn'
-              >
-                Đồng bộ dữ liệu
-                &nbsp;<FontAwesomeIcon icon={faRotate} />
-              </button>
+  <div className="flex items-center space-x-2">
+    {/* Nút Đồng bộ dữ liệu */}
+    <button
+      onClick={syncAppointments}
+      className="bg-sky-600 text-white py-2 px-4 rounded font-bold hover:bg-sky-700"
+      title='Đồng bộ dữ liệu với hệ thống quản lý lịch hẹn'
+    >
+      Đồng bộ dữ liệu
+      &nbsp;<FontAwesomeIcon icon={faRotate} />
+    </button>
 
+    {/* Nút Tải lại danh sách */}
+    <button
+      onClick={getAppointments}
+      className="ml-2 border border-sky-600 text-sky-600 py-2 px-4 rounded font-bold hover:bg-sky-100 transition"
+      title='Tải lại danh sách'
+    >
+      Tải lại danh sách
+      &nbsp;<FontAwesomeIcon icon={faRotate} />
+    </button>
+  </div>
 
-            </div>
+  <div className="flex items-center space-x-2">
+    <button
+      type="button"
+      className="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700 flex items-center"
+    >
+      <p className='font-semibold'>Quét mã vạch</p> &nbsp;
+      <img
+        src='/icons/icon-scan-qr-code.png'
+        title="Quét mã vạch"
+        className="w-6 h-6 ml-2"
+      />
+    </button>
+    <select
+      className="border p-2 rounded border-blue-300"
+    >
+      <option value="">Tất cả trạng thái</option>
+    </select>
 
-            <div className="flex items-center space-x-2">
-              <button
-                type="button"
-                //onClick={() => setShowScanner(true)} // Hiển thị component quét mã vạch
-                className="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700 flex items-center"
-              >
-                <p className='font-semibold'>Quét mã vạch</p> &nbsp;
-                <img
-                  src='/icons/icon-scan-qr-code.png'
-                  title="Quét mã vạch"
-                  className="w-6 h-6 ml-2"
-                />
-              </button>
-              <select
-                className="border p-2 rounded border-blue-300"
-              //value={selectedStatus}
-              //onChange={(e) => setSelectedStatus(e.target.value)}
-              >
-                <option value="">Tất cả trạng thái</option>
-                {/* {
-                  statuses.map((status, index) => (
-                    <option key={index} value={status}>{status}</option>
-                  ))
-                } */}
-              </select>
-
-
-              <input
-                type="text"
-                placeholder="Nhập mã lịch hẹn"
-                //value={keyword}
-                //onChange={(e) => setKeyword(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    //handleSearch(); // Thực hiện tìm kiếm khi nhấn Enter
-                  }
-                }}
-                className="border p-2 rounded w-64 border-blue-300"
-              />
-              <button
-                type="button"
-                //onClick={handleSearch}
-                className="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700"
-              >
-                <FontAwesomeIcon icon={faMagnifyingGlass} />
-              </button>
-            </div>
-          </div>
+    <input
+      type="text"
+      placeholder="Nhập mã lịch hẹn"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          getAppointments(); // Tìm kiếm khi nhấn Enter
+        }
+      }}
+      className="border p-2 rounded w-64 border-blue-300"
+    />
+    <button
+      type="button"
+      onClick={getAppointments}
+      className="bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700"
+    >
+      <FontAwesomeIcon icon={faMagnifyingGlass} />
+    </button>
+  </div>
+</div>
 
           <br />
 
